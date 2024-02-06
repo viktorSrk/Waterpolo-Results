@@ -1,15 +1,22 @@
 package com.example.waterpoloresults.commons
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(primaryKeys = ["leagueId", "group", "leagueKind"])
 data class League(
-    val name: String = "",
+    val name: String?,
     val leagueId: Int = -1,
+    val group: String = "",
     val leagueKind: String = "",
-    val region: String = "") {
+    val region: String?) {
 
     fun buildLeagueLink(year: Int): String {
         return "https://dsvdaten.dsv.de/Modules/WB/League.aspx?Season=" + year +
                 "&LeagueID=" + leagueId +
-                "&Group=&LeagueKind=" + leagueKind
+                "&Group=" + group +
+                "&LeagueKind=" + leagueKind
     }
 
     override fun equals(other: Any?): Boolean {
@@ -19,12 +26,14 @@ data class League(
         other as League
 
         if (leagueId != other.leagueId) return false
+        if (group != other.group) return false
         return leagueKind == other.leagueKind
     }
 
     override fun hashCode(): Int {
-        var result = leagueId
-        result = 31 * result + leagueKind.hashCode()
+        var result = leagueId ?: 0
+        result = 31 * result + group.hashCode()
+        result = 31 * result + (leagueKind?.hashCode() ?: 0)
         return result
     }
 }

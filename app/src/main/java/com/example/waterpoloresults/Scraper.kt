@@ -16,6 +16,7 @@ class Scraper(private var websiteUrl: String) {
         val leagues = skrape(HttpFetcher) {
             request {
                 url = websiteUrl + "Index.aspx"
+                timeout = 10000
             }
 
             extractIt<LeaguesScraped> {results ->
@@ -42,10 +43,11 @@ class Scraper(private var websiteUrl: String) {
                         val leagueRegion = "DEU - " + league.parent.parent.parent.parent.parent.siblings.first().text
 
                         results.leagues.add(League(
-                            leagueName,
-                            parameters.get("LeagueID")!!.toInt(),
-                            parameters.get("LeagueKind")!!,
-                            leagueRegion))
+                            name = leagueName,
+                            leagueId =  parameters.get("LeagueID")!!.toInt(),
+                            group = parameters.get("Group")!!,
+                            leagueKind =  parameters.get("LeagueKind")!!,
+                            region =  leagueRegion))
                     }
                 }
             }
