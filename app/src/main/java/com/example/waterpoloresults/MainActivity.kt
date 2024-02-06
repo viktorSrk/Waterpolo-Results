@@ -6,6 +6,8 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -21,11 +23,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.waterpoloresults.commons.League
 import com.example.waterpoloresults.databases.AppDatabase
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 
 class MainActivity : ComponentActivity() {
@@ -33,6 +40,7 @@ class MainActivity : ComponentActivity() {
     companion object {
         lateinit var database: AppDatabase
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Toast.makeText(this, "Hello World from MainActivity", Toast.LENGTH_SHORT).show()
@@ -42,7 +50,12 @@ class MainActivity : ComponentActivity() {
             AppDatabase::class.java,
             "waterpolo-results-database",
         ).build()
+
         val dsvScraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            scrapeLeagues(scraper = dsvScraper, context = this@MainActivity, retries = 5)
+        }
 
         setContent {
             WaterpoloResultsTheme {
@@ -69,7 +82,7 @@ class MainActivity : ComponentActivity() {
 fun UpdateLeagues(scraper: Scraper, context: Context) {
     val coroutinesScope = rememberCoroutineScope()
     Button(onClick = {
-        coroutinesScope.launch {
+        coroutinesScope.launch(Dispatchers.IO) {
             scrapeLeagues(scraper, context)
         }
     }) {
@@ -77,25 +90,50 @@ fun UpdateLeagues(scraper: Scraper, context: Context) {
     }
 }
 
-suspend fun scrapeLeagues(scraper: Scraper, context: Context, retries: Int = 0) {
+suspend fun scrapeLeagues(scraper: Scraper, context: Context, retries: Int = 3) {
     try {
         val leagues = scraper.scrapeLeagues()
         MainActivity.database.leagueDao().insertAll(*leagues.leagues.toTypedArray())
     } catch (e: SocketTimeoutException) {
-        if (retries < 3) {
-            Toast.makeText(context, "Sync failed, trying again...", Toast.LENGTH_SHORT).show()
-            scrapeLeagues(scraper, context, retries = retries + 1)
+        if (retries > 0) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Sync failed, trying again...", Toast.LENGTH_SHORT).show()
+            }
+            scrapeLeagues(scraper, context, retries = retries - 1)
         } else {
-            Toast.makeText(context, "Sync failed multiple times, please check network connection", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    context,
+                    "Sync failed multiple times, please check network connection",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }
 
 @Composable
 fun Leagues(leagues: List<League>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
-        items(items = leagues) { l ->
-            Text(text = l.name!!)
+    val preferredOrder = listOf("DEU - National", "DEU - Landesgruppen")
+    val leaguesByRegion = leagues.groupBy { it.region }
+        .entries
+        .sortedWith(compareBy({ preferredOrder.indexOf(it.key) == -1 }, { preferredOrder.indexOf(it.key) }, { it.key }))
+        .associateBy({ it.key }, {it.value})
+
+    LazyColumn {
+        leaguesByRegion.forEach { (region, leagues) ->
+            item {
+                Text(text = region!!,
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(8.dp))
+            }
+            items(leagues) {l ->
+                Button(onClick = {
+                    //TODO
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text(text = l.name!!)
+                }
+            }
         }
     }
 }
