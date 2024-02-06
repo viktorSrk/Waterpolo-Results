@@ -1,6 +1,7 @@
 package com.example.waterpoloresults
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -30,7 +31,6 @@ import com.example.waterpoloresults.commons.League
 import com.example.waterpoloresults.databases.AppDatabase
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                                 leagues = it
                             }
                         }
-                        Leagues(leagues)
+                        Leagues(leagues = leagues, scraperUrl = dsvScraper.websiteUrl, context = this@MainActivity)
                     }
                 }
             }
@@ -113,7 +113,11 @@ suspend fun scrapeLeagues(scraper: Scraper, context: Context, retries: Int = 3) 
 }
 
 @Composable
-fun Leagues(leagues: List<League>, modifier: Modifier = Modifier) {
+fun Leagues(leagues: List<League>,
+            scraperUrl: String = "",
+            modifier: Modifier = Modifier,
+            context: Context = MainActivity()) {
+
     val preferredOrder = listOf("DEU - National", "DEU - Landesgruppen")
     val leaguesByRegion = leagues.groupBy { it.region }
         .entries
@@ -129,7 +133,13 @@ fun Leagues(leagues: List<League>, modifier: Modifier = Modifier) {
             }
             items(leagues) {l ->
                 Button(onClick = {
-                    //TODO
+                    val intent = Intent(context, GamesActivity::class.java).apply {
+                        putExtra("leagueId", l.leagueId)
+                        putExtra("leagueGroup", l.group)
+                        putExtra("leagueKind", l.leagueKind)
+                        putExtra("scraperUrl", scraperUrl)
+                    }
+                    context.startActivity(intent)
                 }, modifier = Modifier.fillMaxWidth()) {
                     Text(text = l.name!!)
                 }

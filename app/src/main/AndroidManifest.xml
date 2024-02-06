@@ -15,6 +15,11 @@
         android:theme="@style/Theme.WaterpoloResults"
         tools:targetApi="31">
         <activity
+            android:name=".GamesActivity"
+            android:exported="false"
+            android:label="@string/title_activity_games"
+            android:theme="@style/Theme.WaterpoloResults" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.WaterpoloResults">

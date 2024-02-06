@@ -2,16 +2,18 @@ package com.example.waterpoloresults.commons
 
 import androidx.room.Entity
 
-@Entity(primaryKeys = ["leagueId", "group", "leagueKind"])
+@Entity(
+    tableName = "league",
+    primaryKeys = ["leagueId", "group", "leagueKind"])
 data class League(
-    val name: String?,
+    val name: String = "",
     val leagueId: Int = -1,
     val group: String = "",
     val leagueKind: String = "",
-    val region: String?) {
+    val region: String = "") {
 
-    fun buildLeagueLink(year: Int): String {
-        return "https://dsvdaten.dsv.de/Modules/WB/League.aspx?Season=" + year +
+    fun buildLeagueLink(season: Int): String {
+        return "League.aspx?Season=" + season +
                 "&LeagueID=" + leagueId +
                 "&Group=" + group +
                 "&LeagueKind=" + leagueKind
