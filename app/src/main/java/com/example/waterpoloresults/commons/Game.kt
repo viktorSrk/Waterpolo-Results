@@ -1,8 +1,6 @@
 package com.example.waterpoloresults.commons
 
-import androidx.room.Embedded
 import androidx.room.Entity
-import java.util.Date
 
 @Entity(
     tableName = "game",

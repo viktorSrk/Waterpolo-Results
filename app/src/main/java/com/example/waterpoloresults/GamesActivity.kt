@@ -37,7 +37,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class GamesActivity : ComponentActivity() {
@@ -94,16 +93,15 @@ class GamesActivity : ComponentActivity() {
 @Composable
 fun Games(games: List<Game>,
           scraperUrl: String = "",
-          modifier: Modifier = Modifier,
           context: Context = GamesActivity()) {
 
     val gamesByMonth = games.groupBy {
         SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(it.date)
-    }.toSortedMap(Comparator { o1, o2 ->
+    }.toSortedMap { o1, o2 ->
         val date1 = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).parse(o1)!!
         val date2 = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).parse(o2)!!
         date1.compareTo(date2)
-    })
+    }
 
     LazyColumn {
         gamesByMonth.forEach { (month, games) ->

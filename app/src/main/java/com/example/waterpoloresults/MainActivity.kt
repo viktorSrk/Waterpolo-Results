@@ -115,7 +115,6 @@ suspend fun scrapeLeagues(scraper: Scraper, context: Context, retries: Int = 3) 
 @Composable
 fun Leagues(leagues: List<League>,
             scraperUrl: String = "",
-            modifier: Modifier = Modifier,
             context: Context = MainActivity()) {
 
     val preferredOrder = listOf("DEU - National", "DEU - Landesgruppen")
@@ -127,7 +126,7 @@ fun Leagues(leagues: List<League>,
     LazyColumn {
         leaguesByRegion.forEach { (region, leagues) ->
             item {
-                Text(text = region!!,
+                Text(text = region,
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(8.dp))
             }
@@ -141,7 +140,7 @@ fun Leagues(leagues: List<League>,
                     }
                     context.startActivity(intent)
                 }, modifier = Modifier.fillMaxWidth()) {
-                    Text(text = l.name!!)
+                    Text(text = l.name)
                 }
             }
         }
