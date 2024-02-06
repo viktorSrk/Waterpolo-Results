@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -26,7 +25,6 @@ import androidx.room.Room
 import com.example.waterpoloresults.commons.League
 import com.example.waterpoloresults.databases.AppDatabase
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 
@@ -44,7 +42,7 @@ class MainActivity : ComponentActivity() {
             AppDatabase::class.java,
             "waterpolo-results-database",
         ).build()
-        val dsvScraper: Scraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
+        val dsvScraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
 
         setContent {
             WaterpoloResultsTheme {

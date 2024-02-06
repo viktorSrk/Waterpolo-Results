@@ -1,8 +1,6 @@
 package com.example.waterpoloresults.commons
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
 @Entity(primaryKeys = ["leagueId", "group", "leagueKind"])
 data class League(
@@ -31,9 +29,9 @@ data class League(
     }
 
     override fun hashCode(): Int {
-        var result = leagueId ?: 0
+        var result = leagueId
         result = 31 * result + group.hashCode()
-        result = 31 * result + (leagueKind?.hashCode() ?: 0)
+        result = 31 * result + leagueKind.hashCode()
         return result
     }
 }
