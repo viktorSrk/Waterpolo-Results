@@ -23,7 +23,6 @@ class Scraper(val websiteUrl: String) {
 
     data class LeagueSetHolder(val set: MutableSet<League> = mutableSetOf())
     data class GameSetHolder(val set: MutableSet<Game> = mutableSetOf())
-    data class BooleanHolder(var value: Boolean = false)
 
     fun scrapeLeagues(): List<League> {
         val leagues = skrape(HttpFetcher) {
