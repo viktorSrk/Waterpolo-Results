@@ -25,7 +25,7 @@ data class LeagueDsvInfo(
     val dsvLeagueKind: String = ""
 ) {
 
-    fun buildLeagLink(): String {
+    fun buildLeagueLink(): String {
         return "League.aspx?Season=" + dsvLeagueSeason +
                 "&LeagueID=" + dsvLeagueId +
                 "&Group=" + dsvLeagueGroup +

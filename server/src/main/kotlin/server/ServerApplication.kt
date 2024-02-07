@@ -15,7 +15,7 @@ class ServerApplication
 fun main(args: Array<String>) {
 	val context: ApplicationContext = runApplication<ServerApplication>(*args)
 
-	val dsvScraper: Scraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
+	val dsvScraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
 	val leagueController: LeagueController = context.getBean(LeagueController::class.java)
 	while (true) {
 		val leagues: List<League> = dsvScraper.scrapeLeagues()
