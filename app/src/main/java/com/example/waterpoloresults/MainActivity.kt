@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,18 +39,25 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val fetchedLeagues = sut.getLeagues()
-            leagues.value = fetchedLeagues
-        }
+        fetchLeagues()
 
         setContent {
             WaterpoloResultsTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting(leagues.value, context = this@MainActivity)
+                Surface(/*modifier = Modifier.fillMaxSize(),*/ color = MaterialTheme.colorScheme.background) {
+                    Column {
+                        UpdateButton(onClick = { fetchLeagues() })
+                        Greeting(leagues.value, context = this@MainActivity)
+                    }
                 }
             }
+        }
+    }
+
+    fun fetchLeagues() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val fetchedLeagues = sut.getLeagues()
+            leagues.value = fetchedLeagues
         }
     }
 }
@@ -84,6 +92,16 @@ fun Greeting(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun UpdateButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(onClick = onClick) {
+        Text(text = "Update")
     }
 }
 
