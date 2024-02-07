@@ -1,6 +1,7 @@
 package server
 
 import commons.Game
+import commons.GameDsvInfo
 import commons.League
 import commons.LeagueDsvInfo
 import it.skrape.core.htmlDocument
@@ -88,9 +89,21 @@ class Scraper(val websiteUrl: String) {
                         val home = row.children[2].text
                         val away = row.children[3].text
 
+                        val dsvLink = row.findFirst("a").attribute("href").drop(websiteUrl.length)
+                        if (!dsvLink.startsWith("Game.aspx")) continue
+                        val dsvParams = HashMap<String, String>()
+                        for (param in dsvLink.drop("Game.aspx?".length).split("&")) {
+                            val split = param.split("=")
+                            dsvParams.put(split[0], split[1])
+                        }
+                        val dsvId = dsvParams["GameID"]!!.toInt()
+
                         results.set.add(Game(
                             home = home,
-                            away = away
+                            away = away,
+                            dsvInfo = GameDsvInfo(
+                                dsvGameId = dsvId
+                            )
                         ))
                     }
                 }

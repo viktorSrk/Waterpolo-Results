@@ -25,13 +25,15 @@ fun main(args: Array<String>) {
 		val leagues: List<League> = dsvScraper.scrapeLeagues()
 
 		for (l in leagues) {
-			val response: ResponseEntity<League> = leagueController.addLeague(l)
-			val leagueId: Long = response.body!!.id
+			val leagueResponse: ResponseEntity<League> = leagueController.addLeague(l)
+			val leagueId: Long = leagueResponse.body!!.id
 			leagueController.setDsvInfo(l.dsvInfo!!, leagueId)
 
 			val games: List<Game> = dsvScraper.scrapeGames(leagueController.getLeagueById(leagueId))
 			for (g in games) {
-				gameController.addGame(g, leagueId)
+				val gameResponse = gameController.addGame(g, leagueId)
+				val gameId: Long = gameResponse.body!!.id
+				gameController.setDsvInfo(g.dsvInfo!!, gameId)
 			}
 		}
 	}
