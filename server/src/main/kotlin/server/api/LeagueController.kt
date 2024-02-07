@@ -23,8 +23,11 @@ class LeagueController(
     @GetMapping(path = ["", "/"])
     fun getLeagues(): List<League> = repo.findAll()
 
+    @GetMapping(path = ["/{id}"])
+    fun getLeagueById(@PathVariable id: Long): League = repo.getReferenceById(id)
+
     @PostMapping(path = ["", "/"])
-    fun add(@RequestBody league: League): ResponseEntity<League> {
+    fun addLeague(@RequestBody league: League): ResponseEntity<League> {
         if (getLeagues().contains(league)) {
             return ResponseEntity.badRequest().build()
         }

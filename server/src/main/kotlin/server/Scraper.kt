@@ -1,11 +1,13 @@
 package server
 
+import commons.Game
 import commons.League
 import commons.LeagueDsvInfo
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.extractIt
 import it.skrape.fetcher.skrape
+import it.skrape.selects.ElementNotFoundException
 import it.skrape.selects.html5.a
 import it.skrape.selects.html5.table
 import it.skrape.selects.html5.tbody
@@ -13,6 +15,10 @@ import it.skrape.selects.html5.td
 import it.skrape.selects.html5.tr
 
 class Scraper(val websiteUrl: String) {
+
+    data class LeagueSetHolder(val set: MutableSet<League> = mutableSetOf())
+    data class GameSetHolder(val set: MutableSet<Game> = mutableSetOf())
+
     fun scrapeLeagues(): List<League> {
         val leagues = skrape(HttpFetcher) {
             request {
@@ -60,5 +66,37 @@ class Scraper(val websiteUrl: String) {
         return leagues.set.toList()
     }
 
-    data class LeagueSetHolder(val set: MutableSet<League> = mutableSetOf())
+    fun scrapeGames(league: League): List<Game> {
+        if (league.dsvInfo == null) return emptyList()
+
+        val games = skrape(HttpFetcher) {
+            request {
+                url = websiteUrl + league.dsvInfo!!.buildLeagueLink()
+            }
+
+            extractIt<GameSetHolder> { results ->
+                htmlDocument {
+                    val gameRows = findFirst("#games").findFirst(".table").findAll("tr").
+                    filter { try {
+                        it.findFirst("a")
+                        true
+                    } catch (e: ElementNotFoundException) {
+                        false
+                    }}
+
+                    for (row in gameRows) {
+                        val home = row.children[2].text
+                        val away = row.children[3].text
+
+                        results.set.add(Game(
+                            home = home,
+                            away = away
+                        ))
+                    }
+                }
+            }
+        }
+
+        return games.set.toList()
+    }
 }

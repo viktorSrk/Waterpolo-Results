@@ -1,11 +1,15 @@
 package com.example.waterpoloresults
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import com.example.waterpoloresults.utils.ServerUtils
@@ -52,11 +57,26 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(leagues: List<League>, modifier: Modifier = Modifier) {
-    LazyColumn(content = {
-        items(leagues) {l ->
-            Text(text = l.name)
+    val preferredOrder = listOf("DEU National", "DEU Landesgruppen")
+    val leaguesByRegion = leagues.groupBy { "${it.country} ${it.region}" }
+        .entries
+        .sortedWith(compareBy({ preferredOrder.indexOf(it.key) == -1 }, { preferredOrder.indexOf(it.key) }, { it.key }))
+        .associateBy({ it.key }, {it.value})
+
+    LazyColumn {
+        leaguesByRegion.forEach { (countryAndRegion, leagues) ->
+            item {
+                Text(text = countryAndRegion,
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(8.dp))
+            }
+            items(leagues) {l ->
+                Button(onClick = { /*TODO*/}, modifier = Modifier.fillMaxWidth()) {
+                    Text(text = l.name)
+                }
+            }
         }
-    })
+    }
 }
 
 @Preview(showBackground = true)
