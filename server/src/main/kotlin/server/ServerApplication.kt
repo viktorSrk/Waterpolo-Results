@@ -33,6 +33,7 @@ fun main(args: Array<String>) {
 			for (g in games) {
 				val gameResponse = gameController.addGame(g, leagueId)
 				val gameId: Long = gameResponse.body!!.id
+				gameController.setResult(g.result!!, gameId)
 				gameController.setDsvInfo(g.dsvInfo!!, gameId)
 			}
 		}

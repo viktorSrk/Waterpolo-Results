@@ -2,6 +2,7 @@ package server
 
 import commons.Game
 import commons.GameDsvInfo
+import commons.GameResult
 import commons.League
 import commons.LeagueDsvInfo
 import it.skrape.core.htmlDocument
@@ -22,6 +23,7 @@ class Scraper(val websiteUrl: String) {
 
     data class LeagueSetHolder(val set: MutableSet<League> = mutableSetOf())
     data class GameSetHolder(val set: MutableSet<Game> = mutableSetOf())
+    data class BooleanHolder(var value: Boolean = false)
 
     fun scrapeLeagues(): List<League> {
         val leagues = skrape(HttpFetcher) {
@@ -113,6 +115,19 @@ class Scraper(val websiteUrl: String) {
                             date = -1
                         }
 
+                        val homeScore = arrayOf(0, 0, 0, 0)
+                        val awayScore = arrayOf(0, 0, 0, 0)
+                        var resultString = row.children[6].text
+                        if (!resultString.isEmpty() && resultString.startsWith("(")) {
+                            resultString = resultString.drop(1).dropLast(1)
+                            val quarterResults = resultString.split(", ")
+                            for (i in 0..3) {
+                                val scores = quarterResults[i].split(":")
+                                homeScore[i] = scores[0].toInt()
+                                awayScore[i] = scores[1].toInt()
+                            }
+                        }
+
                         val dsvLink = row.findFirst("a").attribute("href").drop(websiteUrl.length)
                         if (!dsvLink.startsWith("Game.aspx")) continue
                         val dsvParams = HashMap<String, String>()
@@ -122,10 +137,24 @@ class Scraper(val websiteUrl: String) {
                         }
                         val dsvId = dsvParams["GameID"]!!.toInt()
 
+                        val finished = gameFinished(Game(
+                            dsvInfo = GameDsvInfo(
+                                game = Game(
+                                    league = league
+                                ),
+                                dsvGameId = dsvId
+                            )
+                        ))
+
                         results.set.add(Game(
                             home = home,
                             away = away,
                             date = date,
+                            result = GameResult(
+                                homeScore = homeScore,
+                                awayScore = awayScore,
+                                finished = finished
+                            ),
                             dsvInfo = GameDsvInfo(
                                 dsvGameId = dsvId
                             )
@@ -136,5 +165,32 @@ class Scraper(val websiteUrl: String) {
         }
 
         return games.set.toList()
+    }
+
+    private fun gameFinished(game: Game): Boolean {
+        if (game.dsvInfo == null) return false
+
+        val result = skrape(HttpFetcher) {
+            request {
+                url = websiteUrl + game.dsvInfo!!.buildGameLink()
+            }
+
+            extractIt<BooleanHolder> {holder ->
+                var finished: Boolean = false
+                htmlDocument {
+                    val endTimeString = findFirst("#ContentSection__endgameLabel").text
+                    if (endTimeString.isEmpty()) {
+                        finished = false
+                    } else {
+                        finished = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).parse(
+                            endTimeString.dropLastWhile { !it.isDigit() }
+                        ).time < System.currentTimeMillis()
+                    }
+                }
+                holder.value = finished
+            }
+        }
+
+        return result.value
     }
 }

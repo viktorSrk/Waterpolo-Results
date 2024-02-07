@@ -1,5 +1,7 @@
 package server
 
+import commons.League
+import commons.LeagueDsvInfo
 import org.junit.jupiter.api.Test
 
 class ScraperTest {
@@ -12,16 +14,16 @@ class ScraperTest {
 
     @Test
     fun scrapeGames() {
-//        val scraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
-//        scraper.scrapeGames(
-//            League(
-//            dsvInfo = LeagueDsvInfo(
-//                dsvLeagueSeason = 2023,
-//                dsvLeagueId = 30,
-//                dsvLeagueGroup = "",
-//                dsvLeagueKind = "L"
-//            )
-//            )
-//        )
+        val scraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
+        scraper.scrapeGames(
+            League(
+            dsvInfo = LeagueDsvInfo(
+                dsvLeagueSeason = 2023,
+                dsvLeagueId = 30,
+                dsvLeagueGroup = "",
+                dsvLeagueKind = "L"
+            )
+            )
+        )
     }
 }
