@@ -29,6 +29,4 @@ data class Game(
     @JsonManagedReference
     @OneToOne(mappedBy = "game", orphanRemoval = true, cascade = [CascadeType.ALL])
     val dsvInfo: GameDsvInfo? = null
-) {
-
-}
+)

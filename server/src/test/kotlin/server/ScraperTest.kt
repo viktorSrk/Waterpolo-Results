@@ -1,7 +1,5 @@
 package server
 
-import commons.League
-import commons.LeagueDsvInfo
 import org.junit.jupiter.api.Test
 
 class ScraperTest {
