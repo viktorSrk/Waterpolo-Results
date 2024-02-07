@@ -61,7 +61,7 @@ class GamesActivity : ComponentActivity() {
 
 @Composable
 fun Games(games: List<Game>, modifier: Modifier = Modifier) {
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(games) {g ->
             GameCard(game = g, modifier = Modifier.fillMaxWidth())
         }
