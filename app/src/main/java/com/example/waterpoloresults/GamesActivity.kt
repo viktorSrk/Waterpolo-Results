@@ -3,6 +3,7 @@ package com.example.waterpoloresults
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +27,8 @@ import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.Game
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class GamesActivity : ComponentActivity() {
 
@@ -61,9 +64,23 @@ class GamesActivity : ComponentActivity() {
 
 @Composable
 fun Games(games: List<Game>, modifier: Modifier = Modifier) {
+
+    val gamesByMonth = games.groupBy {
+        SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(it.date)
+    }.toSortedMap { o1, o2 ->
+        val date1 = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).parse(o1)!!
+        val date2 = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).parse(o2)!!
+        date1.compareTo(date2)
+    }
+
     LazyColumn(modifier = modifier) {
-        items(games) {g ->
-            GameCard(game = g, modifier = Modifier.fillMaxWidth())
+        gamesByMonth.forEach {(month, games) ->
+            item {
+                Text(text = month, style = MaterialTheme.typography.headlineMedium)
+            }
+            items(games) { g ->
+                GameCard(game = g, modifier = Modifier.fillMaxWidth())
+            }
         }
     }
 }
@@ -78,6 +95,13 @@ fun GameCard(game: Game, modifier: Modifier = Modifier) {
                     .padding(8.dp, 0.dp)
                     .align(Alignment.CenterVertically),
                 textAlign = TextAlign.Center)
+            Text(text = SimpleDateFormat("dd.MMM.\nHH:mm", Locale.getDefault()).format(game.date),
+                modifier = Modifier
+                    .width(60.dp)
+                    .background(MaterialTheme.colorScheme.tertiary)
+                    .align(Alignment.CenterVertically),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onTertiary)
             Text(text = game.away,
                 modifier = Modifier
                     .width(150.dp)
@@ -92,8 +116,8 @@ fun GameCard(game: Game, modifier: Modifier = Modifier) {
 @Composable
 fun GamesPreview() {
     val dummyGames = listOf(
-        Game(1, "Hamburger Turnerbund v. 1862", "SV Poseidon Hamburg"),
-        Game(2, "SV Poseidon Hamburg", "Hamburger Turnerbund v. 1862")
+        Game(1, "Hamburger Turnerbund v. 1862", "SV Poseidon Hamburg", 100002003000),
+        Game(2, "SV Poseidon Hamburg", "Hamburger Turnerbund v. 1862", 0L)
     )
     WaterpoloResultsTheme {
         Games(dummyGames)
