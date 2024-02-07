@@ -24,9 +24,9 @@ data class GameDsvInfo(
 
     fun buildGameLink(): String {
         return "Game.aspx?Season=" + game!!.league!!.dsvInfo!!.dsvLeagueSeason +
-                "&LeagueID=" + game.league!!.dsvInfo!!.dsvLeagueId +
-                "&Group=" + game.league!!.dsvInfo!!.dsvLeagueGroup +
-                "&LeagueKind=" + game.league!!.dsvInfo!!.dsvLeagueKind +
+                "&LeagueID=" + game!!.league!!.dsvInfo!!.dsvLeagueId +
+                "&Group=" + game!!.league!!.dsvInfo!!.dsvLeagueGroup +
+                "&LeagueKind=" + game!!.league!!.dsvInfo!!.dsvLeagueKind +
                 "&GameID=" + dsvGameId
     }
 }
