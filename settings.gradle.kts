@@ -15,3 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Waterpolo Results"
 include(":app")
+include(":server")
+include(":commons")
