@@ -25,7 +25,14 @@ class LeagueController(
 
     @PostMapping(path = ["", "/"])
     fun add(@RequestBody league: League): ResponseEntity<League> {
+        if (getLeagues().contains(league)) {
+            return ResponseEntity.badRequest().build()
+        }
+
         val saved: League = repo.save(league)
+        if (league.dsvInfo != null) {
+            updateDsvInfo(league.dsvInfo!!, saved.id)
+        }
         return ResponseEntity.ok(saved)
     }
 

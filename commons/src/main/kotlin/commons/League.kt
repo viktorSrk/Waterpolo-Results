@@ -37,7 +37,6 @@ data class League(
         if (name != other.name) return false
         if (country != other.country) return false
         if (region != other.region) return false
-        if (games != other.games) return false
         return dsvInfo == other.dsvInfo
     }
 
@@ -45,7 +44,6 @@ data class League(
         var result = name.hashCode()
         result = 31 * result + country.hashCode()
         result = 31 * result + region.hashCode()
-        result = 31 * result + games.hashCode()
         result = 31 * result + (dsvInfo?.hashCode() ?: 0)
         return result
     }
