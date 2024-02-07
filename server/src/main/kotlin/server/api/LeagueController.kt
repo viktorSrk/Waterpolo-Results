@@ -34,13 +34,13 @@ class LeagueController(
 
         val saved: League = repo.save(league)
         if (league.dsvInfo != null) {
-            updateDsvInfo(league.dsvInfo!!, saved.id)
+            setDsvInfo(league.dsvInfo!!, saved.id)
         }
         return ResponseEntity.ok(saved)
     }
 
     @PostMapping(path = ["/addDsvInfo/{leagueId}"])
-    fun updateDsvInfo(@RequestBody dsvInfo: LeagueDsvInfo, @PathVariable leagueId: Long): ResponseEntity<LeagueDsvInfo> {
+    fun setDsvInfo(@RequestBody dsvInfo: LeagueDsvInfo, @PathVariable leagueId: Long): ResponseEntity<LeagueDsvInfo> {
         val assoc = repo.getReferenceById(leagueId)
         var saved: LeagueDsvInfo = dsvRepo.save(dsvInfo)
         saved.league = assoc
