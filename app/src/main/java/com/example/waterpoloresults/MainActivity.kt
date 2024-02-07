@@ -1,5 +1,6 @@
 package com.example.waterpoloresults
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
             WaterpoloResultsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting(leagues.value)
+                    Greeting(leagues.value, context = this@MainActivity)
                 }
             }
         }
@@ -56,7 +57,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(leagues: List<League>, modifier: Modifier = Modifier) {
+fun Greeting(
+    leagues: List<League>,
+    modifier: Modifier = Modifier,
+    context: Context = MainActivity()
+) {
     val preferredOrder = listOf("DEU National", "DEU Landesgruppen")
     val leaguesByRegion = leagues.groupBy { "${it.country} ${it.region}" }
         .entries
@@ -71,7 +76,12 @@ fun Greeting(leagues: List<League>, modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(8.dp))
             }
             items(leagues) {l ->
-                Button(onClick = { /*TODO*/}, modifier = Modifier.fillMaxWidth()) {
+                Button(onClick = {
+                    val intent = Intent(context, GamesActivity::class.java).apply {
+                        putExtra("leagueId", l.id)
+                    }
+                    context.startActivity(intent)
+                }, modifier = Modifier.fillMaxWidth()) {
                     Text(text = l.name)
                 }
             }
