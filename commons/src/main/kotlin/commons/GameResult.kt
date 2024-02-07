@@ -14,9 +14,9 @@ data class GameResult(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    val homeScore: Array<Int> = arrayOf(0, 0, 0, 0),
-    val awayScore: Array<Int> = arrayOf(0, 0, 0, 0),
-    val finished: Boolean = false,
+    var homeScore: Array<Int> = arrayOf(0, 0, 0, 0),
+    var awayScore: Array<Int> = arrayOf(0, 0, 0, 0),
+    var finished: Boolean = false,
 
     @JsonBackReference
     @OneToOne

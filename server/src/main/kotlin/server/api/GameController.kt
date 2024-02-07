@@ -28,6 +28,9 @@ class GameController(
     @GetMapping(path = ["", "/"])
     fun getGames(): List<Game> = repo.findAll()
 
+    @GetMapping(path = ["/{id}"])
+    fun getGameById(@PathVariable id: Long): Game = repo.getReferenceById(id)
+
     @PostMapping(path = ["/add/{leagueId}"])
     fun addGame(@RequestBody game: Game, @PathVariable leagueId: Long): ResponseEntity<Game> {
         val assoc = leagueRepo.getReferenceById(leagueId)
