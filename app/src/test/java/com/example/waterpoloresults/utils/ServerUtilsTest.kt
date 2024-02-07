@@ -27,4 +27,11 @@ class ServerUtilsTest {
     @Test
     fun setHttpUrl() {
     }
+
+//    @Test
+//    fun getLeagues() {
+//        val sut = ServerUtils("localhost:8080")
+//        val leagues = sut.getLeagues()
+//        assertTrue(leagues.isNotEmpty())
+//    }
 }

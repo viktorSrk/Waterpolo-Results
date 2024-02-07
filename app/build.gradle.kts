@@ -44,6 +44,13 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+
+        resources {
+            merges.add("META-INF/*")
+        }
+
+        resources.merges.add("notice.txt")
+        resources.merges.add("license.txt")
     }
 }
 
@@ -66,6 +73,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
-    implementation("org.glassfish.jersey.core:jersey-client:3.0.3")
+//    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.0.0")
+//    implementation("org.glassfish.jersey.core:jersey-client:3.0.3")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
+    implementation("org.springframework.boot:spring-boot-starter-mustache:2.5.4")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.5.4")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.5")
 }

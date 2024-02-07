@@ -1,10 +1,10 @@
 package com.example.waterpoloresults.utils
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import commons.League
-import jakarta.ws.rs.client.ClientBuilder
-import jakarta.ws.rs.core.GenericType
-import jakarta.ws.rs.core.MediaType.APPLICATION_JSON
-import org.glassfish.jersey.client.ClientConfig
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 class ServerUtils(
     serverUrl: String
@@ -16,11 +16,18 @@ class ServerUtils(
         }
     var httpUrl: String = "http://$serverUrl"
 
+    private val client = OkHttpClient()
+
     fun getLeagues(): List<League> {
-        return ClientBuilder.newClient(ClientConfig())
-            .target(httpUrl).path("/api/leagues")
-            .request(APPLICATION_JSON)
-            .accept(APPLICATION_JSON)
-            .get(object : GenericType<List<League>>() {})
+        val request = Request.Builder()
+            .url("$httpUrl/api/leagues")
+            .get()
+            .build()
+
+        client.newCall(request).execute().use {response ->
+            val leaguesJson = response.body?.string()
+            val mapper = jacksonObjectMapper()
+            return mapper.readValue(leaguesJson ?: "")
+        }
     }
 }
