@@ -95,7 +95,11 @@ fun GameCard(game: Game, modifier: Modifier = Modifier) {
                     .padding(8.dp, 0.dp)
                     .align(Alignment.CenterVertically),
                 textAlign = TextAlign.Center)
-            Text(text = SimpleDateFormat("dd.MMM.\nHH:mm", Locale.getDefault()).format(game.date),
+            Text(text = if (game.result != null && game.result!!.finished) {
+                game.result!!.toScore()
+            } else {
+                SimpleDateFormat("dd.MMM.\nHH:mm", Locale.getDefault()).format(game.date)
+                   },
                 modifier = Modifier
                     .width(60.dp)
                     .background(MaterialTheme.colorScheme.tertiary)
