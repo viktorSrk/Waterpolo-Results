@@ -14,6 +14,9 @@ import it.skrape.selects.html5.table
 import it.skrape.selects.html5.tbody
 import it.skrape.selects.html5.td
 import it.skrape.selects.html5.tr
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class Scraper(val websiteUrl: String) {
 
@@ -89,6 +92,27 @@ class Scraper(val websiteUrl: String) {
                         val home = row.children[2].text
                         val away = row.children[3].text
 
+                        var date: Long
+                        var dateHolderText = row.children[1].text
+                        try {
+                            if (dateHolderText.startsWith("unbekannt")) {
+                                date = -1
+                            } else if (dateHolderText.endsWith("unbekannt")) {
+                                dateHolderText = dateHolderText.dropLast("unbekannt".length)
+                                date = SimpleDateFormat("dd.MM.yy, ", Locale.getDefault()).parse(
+                                    dateHolderText
+                                ).time
+                            } else {
+                                dateHolderText = dateHolderText.dropLast(" Uhr".length)
+                                date =
+                                    SimpleDateFormat("dd.MM.yy, HH:mm", Locale.getDefault()).parse(
+                                        dateHolderText
+                                    ).time
+                            }
+                        } catch (e: ParseException) {
+                            date = -1
+                        }
+
                         val dsvLink = row.findFirst("a").attribute("href").drop(websiteUrl.length)
                         if (!dsvLink.startsWith("Game.aspx")) continue
                         val dsvParams = HashMap<String, String>()
@@ -101,6 +125,7 @@ class Scraper(val websiteUrl: String) {
                         results.set.add(Game(
                             home = home,
                             away = away,
+                            date = date,
                             dsvInfo = GameDsvInfo(
                                 dsvGameId = dsvId
                             )
