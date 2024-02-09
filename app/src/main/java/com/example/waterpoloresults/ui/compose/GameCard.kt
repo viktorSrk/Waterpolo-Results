@@ -3,9 +3,7 @@ package com.example.waterpoloresults.ui.compose
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedCard
@@ -82,7 +80,7 @@ fun Date(date: Long, modifier: Modifier = Modifier) {
 @Preview(showBackground = true, widthDp = 320)
 @Preview(showBackground = true, widthDp = 320, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun GreetingPreview(game: Game = Game(
+fun GameCardPreview(game: Game = Game(
     home = "Hamburger TB v. 1862",
     away = "SV Poseidon Hamburg",
     date = 1692549390100,
@@ -103,7 +101,7 @@ fun GreetingPreview(game: Game = Game(
 @Preview(showBackground = true, widthDp = 320, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun GameCardPreview2() {
-    GreetingPreview(game = Game(
+    GameCardPreview(game = Game(
         home = "Hamburger TB v. 1862",
         away = "SV Poseidon Hamburg",
         date = 1692549390100,

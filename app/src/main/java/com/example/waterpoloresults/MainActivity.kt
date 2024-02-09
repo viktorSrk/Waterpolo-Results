@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import com.example.waterpoloresults.ui.compose.CountryCard
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import com.example.waterpoloresults.utils.ServerUtils
 import commons.League
@@ -43,10 +45,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             WaterpoloResultsTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(/*modifier = Modifier.fillMaxSize(),*/ color = MaterialTheme.colorScheme.background) {
-                    Column {
-                        UpdateButton(onClick = { fetchLeagues() })
-                        Greeting(leagues.value, context = this@MainActivity)
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    LazyColumn {
+                        item {
+                            UpdateButton(onClick = { fetchLeagues() })
+                        }
+                        item {
+                            CountryCard(
+                                countryName = "DEU",
+                                leagues = leagues.value,
+                                modifier = Modifier.fillMaxWidth(),
+                                preferredOrder = listOf("National", "Landesgruppen")
+                            )
+                        }
                     }
                 }
             }
@@ -57,39 +68,6 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             val fetchedLeagues = sut.getLeagues()
             leagues.value = fetchedLeagues
-        }
-    }
-}
-
-@Composable
-fun Greeting(
-    leagues: List<League>,
-    modifier: Modifier = Modifier,
-    context: Context = MainActivity()
-) {
-    val preferredOrder = listOf("DEU National", "DEU Landesgruppen")
-    val leaguesByRegion = leagues.groupBy { "${it.country} ${it.region}" }
-        .entries
-        .sortedWith(compareBy({ preferredOrder.indexOf(it.key) == -1 }, { preferredOrder.indexOf(it.key) }, { it.key }))
-        .associateBy({ it.key }, {it.value})
-
-    LazyColumn(modifier = modifier) {
-        leaguesByRegion.forEach { (countryAndRegion, leagues) ->
-            item {
-                Text(text = countryAndRegion,
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(8.dp))
-            }
-            items(leagues) {l ->
-                Button(onClick = {
-                    val intent = Intent(context, GamesActivity::class.java).apply {
-                        putExtra("leagueId", l.id)
-                    }
-                    context.startActivity(intent)
-                }, modifier = Modifier.fillMaxWidth()) {
-                    Text(text = l.name)
-                }
-            }
         }
     }
 }
@@ -113,6 +91,11 @@ fun GreetingPreview() {
         League(4, "League 4", "DEU", "Region 2")
     )
     WaterpoloResultsTheme {
-        Greeting(dummyLeagues)
+        CountryCard(
+            countryName = "DEU",
+            leagues = dummyLeagues,
+            modifier = Modifier.fillMaxWidth(),
+            preferredOrder = listOf("National", "Landesgruppen")
+        )
     }
 }
