@@ -1,6 +1,8 @@
 package com.example.waterpoloresults
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,7 +51,8 @@ class MainActivity : ComponentActivity() {
                                 countryName = "DEU",
                                 leagues = leagues.value,
                                 modifier = Modifier.fillMaxWidth(),
-                                preferredOrder = listOf("National", "Landesgruppen")
+                                preferredOrder = listOf("National", "Landesgruppen"),
+                                onLeagueClick = { league -> openGamesActivityForLeague(league) }
                             )
                         }
                     }
@@ -64,6 +67,13 @@ class MainActivity : ComponentActivity() {
             leagues.value = fetchedLeagues
         }
     }
+
+    fun openGamesActivityForLeague(league: League) {
+        val intent = Intent(this@MainActivity, GamesActivity::class.java).apply {
+            putExtra("leagueId", league.id)
+        }
+        startActivity(intent)
+    }
 }
 
 @Composable
@@ -76,6 +86,7 @@ fun UpdateButton(
 }
 
 @Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun GreetingPreview() {
     val dummyLeagues = listOf(

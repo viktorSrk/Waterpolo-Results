@@ -34,7 +34,8 @@ fun CountryCard(
     countryName: String,
     leagues: Collection<League>,
     modifier: Modifier = Modifier,
-    preferredOrder: List<String> = emptyList()) {
+    preferredOrder: List<String> = emptyList(),
+    onLeagueClick: (League) -> Unit = {}) {
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -53,7 +54,7 @@ fun CountryCard(
             if (expanded) {
                 Column(modifier = Modifier.padding(6.dp)) {
                     leaguesByRegion.forEach { (region, l) ->
-                        RegionCard(region, l, modifier = Modifier.padding(2.dp))
+                        RegionCard(region, l, modifier = Modifier.padding(2.dp), onLeagueClick = onLeagueClick)
                     }
                 }
             }
@@ -63,7 +64,12 @@ fun CountryCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegionCard(regionName: String, leagues: Collection<League>, modifier: Modifier = Modifier) {
+fun RegionCard(
+    regionName: String,
+    leagues: Collection<League>,
+    modifier: Modifier = Modifier,
+    onLeagueClick: (League) -> Unit = {}) {
+
     var expanded by remember { mutableStateOf(false) }
 
     ElevatedCard(onClick = { expanded = !expanded }, modifier = modifier.fillMaxWidth()) {
@@ -75,7 +81,7 @@ fun RegionCard(regionName: String, leagues: Collection<League>, modifier: Modifi
 
         if (expanded) {
             leagues.forEach { l ->
-                LeagueEntry(l)
+                LeagueEntry(l, onClick = onLeagueClick)
             }
         }
     }
@@ -85,13 +91,13 @@ fun RegionCard(regionName: String, leagues: Collection<League>, modifier: Modifi
 fun LeagueEntry(
     league: League,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    onClick: (League) -> Unit = {},
     onFavoriteClick: () -> Unit = {}) {
 
     Divider()
     ListItem(modifier = modifier
         .fillMaxWidth()
-        .clickable { onClick() },
+        .clickable { onClick(league) },
         headlineContent = { Text(text = league.name) },
         trailingContent = {
             IconButton(
