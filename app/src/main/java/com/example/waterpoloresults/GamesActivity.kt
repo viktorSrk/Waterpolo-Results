@@ -74,7 +74,7 @@ fun Games(games: List<Game>, modifier: Modifier = Modifier) {
         LazyColumn {
             gamesByMonth.forEach { (month, games) ->
                 item {
-                    Text(text = month, style = MaterialTheme.typography.headlineMedium)
+                    Text(text = month, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(8.dp))
                 }
                 items(games) { g ->
                     GameCard(game = g, modifier = Modifier.fillMaxWidth())
