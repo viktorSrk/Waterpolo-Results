@@ -30,7 +30,5 @@ data class GameResult(
     @JoinColumn(name = "game_id", referencedColumnName = "id")
     var game: Game? = null
 ) {
-    fun toScore(): String {
-        return "${homeScore.sum()} : ${awayScore.sum()}"
-    }
+
 }

@@ -45,7 +45,7 @@ class GameEventController(
         for (e in events) {
             when (e) {
                 is GoalGameEvent -> {
-                    var saved: GoalGameEvent = repo.save(e as GoalGameEvent)
+                    var saved: GoalGameEvent = repo.save(e)
                     saved.gameResult = assoc
                     saved = repo.save(saved)
                     savedList.add(saved)

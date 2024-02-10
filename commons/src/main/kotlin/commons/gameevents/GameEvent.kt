@@ -6,7 +6,6 @@ import commons.GameResult
 import jakarta.persistence.CascadeType
 import jakarta.persistence.DiscriminatorColumn
 import jakarta.persistence.DiscriminatorType
-import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
