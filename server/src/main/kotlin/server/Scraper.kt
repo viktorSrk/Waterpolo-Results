@@ -5,6 +5,8 @@ import commons.GameDsvInfo
 import commons.GameResult
 import commons.League
 import commons.LeagueDsvInfo
+import commons.gameevents.GameEvent
+import commons.gameevents.GoalGameEvent
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.extractIt
@@ -23,6 +25,7 @@ class Scraper(val websiteUrl: String) {
 
     data class LeagueSetHolder(val set: MutableSet<League> = mutableSetOf())
     data class GameSetHolder(val set: MutableSet<Game> = mutableSetOf())
+    data class GameEventListHolder(val goals: MutableList<GoalGameEvent> = mutableListOf(), val others: MutableList<GameEvent> = mutableListOf())
 
     fun scrapeLeagues(): List<League> {
         val leagues = skrape(HttpFetcher) {
@@ -179,5 +182,77 @@ class Scraper(val websiteUrl: String) {
         }
 
         return gameResult
+    }
+
+    fun scrapeGameEvents(result: GameResult): List<GameEvent> {
+        if (result.game == null || result.game!!.dsvInfo == null) return emptyList()
+
+        val gameEvents = skrape(HttpFetcher) {
+            request {
+                url = websiteUrl + result.game!!.dsvInfo!!.buildGameLink()
+            }
+
+            extractIt<GameEventListHolder> { result ->
+                htmlDocument {
+
+                    var currentEventIndex = 0
+
+                    while (true) {
+                        try {
+                            var eventQuarterString = findFirst("#ContentSection__gameRepeater__periodLabel_${currentEventIndex}").text
+                            if (eventQuarterString == "5m") {
+                                eventQuarterString = "5"
+                            }
+                            val eventQuarter = eventQuarterString.toInt()
+
+                            val eventTimeHolder = findFirst("#ContentSection__gameRepeater__timeLabel_${currentEventIndex}")
+                            val eventTime = if (eventTimeHolder.text.isEmpty()) {
+                                0L
+                            } else {
+                                val eventTimeParts = eventTimeHolder.text.split(":")
+                                60 * eventTimeParts[0].toLong() + eventTimeParts[1].toLong()
+                            }
+
+                            val eventHomeLabel = findFirst("#ContentSection__gameRepeater__homeLabel_${currentEventIndex}").text
+                            val eventAwayLabel = findFirst("#ContentSection__gameRepeater__guestLabel_${currentEventIndex}").text
+                            val eventFromHomeTeam = eventHomeLabel.isNotEmpty() && eventAwayLabel.isEmpty()
+
+                            val eventPlayerName = findFirst("#ContentSection__gameRepeater__playerLabel_${currentEventIndex}").text
+
+                            val eventType = findFirst("#ContentSection__gameRepeater__eventkeyLabel_${currentEventIndex}").text
+
+                            if (eventTimeHolder.attribute("style") == "text-decoration: line-through;") {
+                                currentEventIndex++
+                                continue
+                            }
+
+                            when (eventType) {
+                                "T" -> {
+                                    result.goals.add(GoalGameEvent(
+                                        time = eventTime,
+                                        quarter = eventQuarter,
+                                        scorerName = eventPlayerName,
+                                        scorerNumber = (if (eventFromHomeTeam) eventHomeLabel else eventAwayLabel).toInt(),
+                                        scorerTeamHome = eventFromHomeTeam
+                                    ))
+                                }
+                                else -> {
+                                    result.others.add(GameEvent(
+                                        time = eventTime,
+                                        quarter = eventQuarter
+                                    ))
+                                }
+                            }
+                        } catch (e: ElementNotFoundException) {
+                            break
+                        } finally {
+                            currentEventIndex++
+                        }
+                    }
+                }
+            }
+        }
+
+        return gameEvents.goals + gameEvents.others
     }
 }

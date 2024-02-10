@@ -8,6 +8,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.ApplicationContext
 import org.springframework.http.ResponseEntity
 import server.api.GameController
+import server.api.GameEventController
 import server.api.LeagueController
 
 @SpringBootApplication
@@ -20,6 +21,7 @@ fun main(args: Array<String>) {
 	val dsvScraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
 	val leagueController: LeagueController = context.getBean(LeagueController::class.java)
 	val gameController: GameController = context.getBean(GameController::class.java)
+	val gameEventController: GameEventController = context.getBean(GameEventController::class.java)
 
 	while (true) {
 		val leagues: List<League> = dsvScraper.scrapeLeagues()
@@ -37,8 +39,12 @@ fun main(args: Array<String>) {
 				gameController.setDsvInfo(g.dsvInfo!!, gameId)
 
 				val addedGame = gameController.getGameById(gameId)
-				val result = dsvScraper.scrapeGameResult(addedGame)
-				gameController.setResult(result, gameId)
+				var result = dsvScraper.scrapeGameResult(addedGame)
+				val resultResponse = gameController.setResult(result, gameId)
+				result = resultResponse.body!!
+
+				val gameEvents = dsvScraper.scrapeGameEvents(result)
+				gameEventController.addAllEvents(gameEvents, result.id)
 			}
 		}
 	}

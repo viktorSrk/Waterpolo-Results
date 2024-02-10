@@ -3,6 +3,8 @@ package server.api
 import commons.Game
 import commons.GameDsvInfo
 import commons.GameResult
+import commons.gameevents.GameEvent
+import commons.gameevents.GoalGameEvent
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import server.database.GameDsvInfoRepository
+import server.database.GameEventRepository
 import server.database.GameRepository
 import server.database.GameResultRepository
 import server.database.LeagueRepository

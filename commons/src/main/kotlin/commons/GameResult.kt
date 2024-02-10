@@ -1,11 +1,14 @@
 package commons
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
+import commons.gameevents.GameEvent
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 
 @Entity
@@ -17,6 +20,10 @@ data class GameResult(
     var homeScore: Array<Int> = arrayOf(0, 0, 0, 0),
     var awayScore: Array<Int> = arrayOf(0, 0, 0, 0),
     var finished: Boolean = false,
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "gameResult", orphanRemoval = true, targetEntity = GameEvent::class)
+    var gameEvents: List<GameEvent> = emptyList(),
 
     @JsonBackReference
     @OneToOne
