@@ -1,5 +1,6 @@
 package server.api
 
+import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import org.springframework.beans.factory.annotation.Autowired
@@ -52,6 +53,12 @@ class GameEventController(
             when (e) {
                 is GoalGameEvent -> {
                     var saved: GoalGameEvent = repo.save(e)
+                    saved.gameResult = assoc
+                    saved = repo.save(saved)
+                    savedList.add(saved)
+                }
+                is ExclusionGameEvent -> {
+                    var saved: ExclusionGameEvent = repo.save(e)
                     saved.gameResult = assoc
                     saved = repo.save(saved)
                     savedList.add(saved)

@@ -5,6 +5,7 @@ import commons.GameDsvInfo
 import commons.GameResult
 import commons.League
 import commons.LeagueDsvInfo
+import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import it.skrape.core.htmlDocument
@@ -25,7 +26,11 @@ class Scraper(val websiteUrl: String) {
 
     data class LeagueSetHolder(val set: MutableSet<League> = mutableSetOf())
     data class GameSetHolder(val set: MutableSet<Game> = mutableSetOf())
-    data class GameEventListHolder(val goals: MutableList<GoalGameEvent> = mutableListOf(), val others: MutableList<GameEvent> = mutableListOf())
+    data class GameEventListHolder(
+        val goals: MutableList<GoalGameEvent> = mutableListOf(),
+        val exclusions: MutableList<ExclusionGameEvent> = mutableListOf(),
+        val others: MutableList<GameEvent> = mutableListOf()
+    )
 
     fun scrapeLeagues(): List<League> {
         val leagues = skrape(HttpFetcher) {
@@ -236,6 +241,15 @@ class Scraper(val websiteUrl: String) {
                                         scorerTeamHome = eventFromHomeTeam
                                     ))
                                 }
+                                "A" -> {
+                                    result.exclusions.add(ExclusionGameEvent(
+                                        time = eventTime,
+                                        quarter = eventQuarter,
+                                        excludedName = eventPlayerName,
+                                        excludedNumber = (if (eventFromHomeTeam) eventHomeLabel else eventAwayLabel).toInt(),
+                                        excludedTeamHome = eventFromHomeTeam
+                                    ))
+                                }
                                 else -> {
                                     result.others.add(GameEvent(
                                         time = eventTime,
@@ -253,6 +267,6 @@ class Scraper(val websiteUrl: String) {
             }
         }
 
-        return gameEvents.goals + gameEvents.others
+        return gameEvents.goals + gameEvents.exclusions + gameEvents.others
     }
 }

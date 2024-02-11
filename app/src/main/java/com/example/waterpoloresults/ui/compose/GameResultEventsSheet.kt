@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.waterpoloresults.R
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
+import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 
@@ -83,6 +85,10 @@ fun GameEventRow(event: GameEvent, modifier: Modifier = Modifier) {
             specificTeamEvent = true
             homeTeamEvent = event.scorerTeamHome
         }
+        is ExclusionGameEvent -> {
+            specificTeamEvent = true
+            homeTeamEvent = event.excludedTeamHome
+        }
         else -> {}
     }
 
@@ -97,7 +103,7 @@ fun GameEventRow(event: GameEvent, modifier: Modifier = Modifier) {
         )
 
         GameEventType(event = event, show = !specificTeamEvent || homeTeamEvent)
-        GoalEventTime(event = event)
+        GameEventTime(event = event)
         GameEventType(event = event, show = !specificTeamEvent || !homeTeamEvent)
 
         GameEventText(
@@ -110,7 +116,7 @@ fun GameEventRow(event: GameEvent, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GoalEventTime(event: GameEvent, modifier: Modifier = Modifier) {
+fun GameEventTime(event: GameEvent, modifier: Modifier = Modifier) {
     val minutes: Long = event.time.floorDiv(60)
     val seconds: Long = event.time % 60
     val secondsString = if (seconds < 10) "0$seconds" else "$seconds"
@@ -125,12 +131,15 @@ fun GoalEventTime(event: GameEvent, modifier: Modifier = Modifier) {
 @Composable
 fun GameEventType(event: GameEvent, modifier: Modifier = Modifier, show: Boolean = true) {
     var iconDrawable = -1
-    var iconTint = MaterialTheme.typography.labelLarge.color
+    var iconTint = MaterialTheme.colorScheme.onSurfaceVariant
 
     when (event) {
         is GoalGameEvent -> {
             iconDrawable = R.drawable.sports_waterpoloball
             iconTint = MaterialTheme.colorScheme.primary
+        }
+        is ExclusionGameEvent -> {
+            iconDrawable = R.drawable.sports_whistle
         }
         else -> {}
     }
@@ -159,7 +168,10 @@ fun GameEventText(event: GameEvent, modifier: Modifier = Modifier, show: Boolean
                 primaryText = event.scorerName
                 secondaryText = "(${event.scorerNumber})"
             }
-
+            is ExclusionGameEvent -> {
+                primaryText = event.excludedName
+                secondaryText = "(${event.excludedNumber})"
+            }
             else -> {}
         }
 
@@ -188,18 +200,30 @@ fun GameEventText(event: GameEvent, modifier: Modifier = Modifier, show: Boolean
 @Composable
 fun GameResultEventsSheetPreview() {
     WaterpoloResultsTheme {
-        GameResultEventsSheet(
-            gameEvents = listOf(
-                GameEvent(quarter = 1, time = 441),
-                GoalGameEvent(quarter = 1, time = 450,
-                    scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
-                GoalGameEvent(quarter = 2, time = 321,
-                    scorerTeamHome = false, scorerName = "Ein Lutscher", scorerNumber = 4),
-                GameEvent(quarter = 1, time = 398),
-                GameEvent(quarter = 3, time = 423),
-                GoalGameEvent(quarter = 2, time = 345,
-                    scorerTeamHome = true, scorerName = "J. Enwenaaaaaa", scorerNumber = 11)
+        Surface {
+            GameResultEventsSheet(
+                gameEvents = listOf(
+                    GameEvent(quarter = 1, time = 441),
+                    GoalGameEvent(
+                        quarter = 1, time = 450,
+                        scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12
+                    ),
+                    GoalGameEvent(
+                        quarter = 2, time = 321,
+                        scorerTeamHome = false, scorerName = "Ein Lutscher", scorerNumber = 4
+                    ),
+                    GameEvent(quarter = 1, time = 398),
+                    GameEvent(quarter = 3, time = 423),
+                    GoalGameEvent(
+                        quarter = 2, time = 345,
+                        scorerTeamHome = true, scorerName = "J. Enwenaaaaaa", scorerNumber = 11
+                    ),
+                    ExclusionGameEvent(
+                        quarter = 2, time = 123,
+                        excludedTeamHome = true, excludedName = "F. Lenger", excludedNumber = 3
+                    )
+                )
             )
-        )
+        }
     }
 }
