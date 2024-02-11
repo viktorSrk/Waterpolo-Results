@@ -9,6 +9,7 @@ import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import commons.gameevents.PenaltyGameEvent
+import commons.gameevents.TimeoutGameEvent
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.extractIt
@@ -31,6 +32,7 @@ class Scraper(val websiteUrl: String) {
         val goals: MutableList<GoalGameEvent> = mutableListOf(),
         val exclusions: MutableList<ExclusionGameEvent> = mutableListOf(),
         val penalties: MutableList<PenaltyGameEvent> = mutableListOf(),
+        val timeouts: MutableList<TimeoutGameEvent> = mutableListOf(),
         val others: MutableList<GameEvent> = mutableListOf()
     )
 
@@ -261,6 +263,13 @@ class Scraper(val websiteUrl: String) {
                                         penalizedTeamHome = eventFromHomeTeam
                                     ))
                                 }
+                                "AU" -> {
+                                    result.timeouts.add(TimeoutGameEvent(
+                                        time = eventTime,
+                                        quarter = eventQuarter,
+                                        teamHome = eventFromHomeTeam
+                                    ))
+                                }
                                 else -> {
                                     result.others.add(GameEvent(
                                         time = eventTime,
@@ -278,6 +287,10 @@ class Scraper(val websiteUrl: String) {
             }
         }
 
-        return gameEvents.goals + gameEvents.exclusions + gameEvents.penalties + gameEvents.others
+        return gameEvents.goals +
+                gameEvents.exclusions +
+                gameEvents.penalties +
+                gameEvents.timeouts +
+                gameEvents.others
     }
 }

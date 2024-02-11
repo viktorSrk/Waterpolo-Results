@@ -27,6 +27,7 @@ import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import commons.gameevents.PenaltyGameEvent
+import commons.gameevents.TimeoutGameEvent
 
 @Composable
 fun GameResultEventsSheet(
@@ -79,22 +80,24 @@ fun PeriodDivider(period: Int, modifier: Modifier = Modifier) {
 
 @Composable
 fun GameEventRow(event: GameEvent, modifier: Modifier = Modifier) {
-    var specificTeamEvent = false
+    var specificTeamEvent = true
     var homeTeamEvent = true
     when (event) {
         is GoalGameEvent -> {
-            specificTeamEvent = true
             homeTeamEvent = event.scorerTeamHome
         }
         is ExclusionGameEvent -> {
-            specificTeamEvent = true
             homeTeamEvent = event.excludedTeamHome
         }
         is PenaltyGameEvent -> {
-            specificTeamEvent = true
             homeTeamEvent = event.penalizedTeamHome
         }
-        else -> {}
+        is TimeoutGameEvent -> {
+            homeTeamEvent = event.teamHome
+        }
+        else -> {
+            specificTeamEvent = false
+        }
     }
 
     Row(modifier = modifier.fillMaxWidth(),
@@ -149,6 +152,9 @@ fun GameEventType(event: GameEvent, modifier: Modifier = Modifier, show: Boolean
         is PenaltyGameEvent -> {
             iconDrawable = R.drawable.sports_5m
         }
+        is TimeoutGameEvent -> {
+            iconDrawable = R.drawable.sports_tactics
+        }
         else -> {}
     }
 
@@ -183,6 +189,9 @@ fun GameEventText(event: GameEvent, modifier: Modifier = Modifier, show: Boolean
             is PenaltyGameEvent -> {
                 primaryText = event.penalizedName
                 secondaryText = "(${event.penalizedNumber})"
+            }
+            is TimeoutGameEvent -> {
+                primaryText = "Timeout"
             }
             else -> {}
         }
@@ -234,6 +243,9 @@ fun GameResultEventsSheetPreview() {
                     ),
                     PenaltyGameEvent(
                         penalizedTeamHome = true, penalizedName = "N. Sommer", penalizedNumber = 2
+                    ),
+                    TimeoutGameEvent(
+                        teamHome = true
                     )
                 )
             )

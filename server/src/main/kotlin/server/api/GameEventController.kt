@@ -4,6 +4,7 @@ import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import commons.gameevents.PenaltyGameEvent
+import commons.gameevents.TimeoutGameEvent
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -48,6 +49,12 @@ class GameEventController(
                 }
                 is PenaltyGameEvent -> {
                     var saved: PenaltyGameEvent = repo.save(e)
+                    saved.gameResult = assoc
+                    saved = repo.save(saved)
+                    savedList.add(saved)
+                }
+                is TimeoutGameEvent -> {
+                    var saved: TimeoutGameEvent = repo.save(e)
                     saved.gameResult = assoc
                     saved = repo.save(saved)
                     savedList.add(saved)

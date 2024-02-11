@@ -27,7 +27,8 @@ import jakarta.persistence.ManyToOne
 @JsonSubTypes(
     JsonSubTypes.Type(value = GoalGameEvent::class, name = "GOAL"),
     JsonSubTypes.Type(value = ExclusionGameEvent::class, name = "EXCLUSION"),
-    JsonSubTypes.Type(value = PenaltyGameEvent::class, name = "PENALTY")
+    JsonSubTypes.Type(value = PenaltyGameEvent::class, name = "PENALTY"),
+    JsonSubTypes.Type(value = TimeoutGameEvent::class, name = "TIMEOUT")
 )
 open class GameEvent(
     @Id
