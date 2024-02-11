@@ -65,8 +65,8 @@ fun GameResultBig(game: Game, result: GameResult, modifier: Modifier = Modifier)
 @Composable
 fun TeamBig(
     teamName: String,
-    teamBadge: Painter = painterResource(id = R.drawable.ic_launcher_foreground),
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    teamBadge: Painter = painterResource(id = R.drawable.ic_launcher_foreground)) {
     
     Column(modifier = modifier) {
         ElevatedCard(

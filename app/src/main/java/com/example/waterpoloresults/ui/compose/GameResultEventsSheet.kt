@@ -125,7 +125,7 @@ fun GoalEventTime(event: GameEvent, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GameEventType(event: GameEvent, show: Boolean = true, modifier: Modifier = Modifier) {
+fun GameEventType(event: GameEvent, modifier: Modifier = Modifier, show: Boolean = true) {
     var iconDrawable = -1
     var iconTint = MaterialTheme.typography.labelLarge.color
 

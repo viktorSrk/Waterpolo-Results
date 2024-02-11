@@ -46,10 +46,10 @@ class GameResultActivity : ComponentActivity() {
         val gameId = intent.getLongExtra("gameId", -1)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val fetchedGame = GameResultActivity.sut.getGameById(gameId)
+            val fetchedGame = sut.getGameById(gameId)
             game.value = fetchedGame
 
-            val fetchedResult = GameResultActivity.sut.getGameResultByGameId(gameId)
+            val fetchedResult = sut.getGameResultByGameId(gameId)
             gameResult.value = fetchedResult
         }
 

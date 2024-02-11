@@ -2,7 +2,6 @@ package server.api
 
 import commons.Game
 import commons.GameDsvInfo
-import commons.GameResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,7 +20,6 @@ import server.database.LeagueRepository
 class GameController(
     private val repo: GameRepository,
     @Autowired private val leagueRepo: LeagueRepository,
-    @Autowired private val resultRepo: GameResultRepository,
     @Autowired private val dsvRepo: GameDsvInfoRepository
 ) {
 
