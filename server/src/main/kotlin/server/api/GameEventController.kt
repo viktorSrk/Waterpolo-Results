@@ -13,7 +13,7 @@ import server.database.GameEventRepository
 import server.database.GameResultRepository
 
 @RestController
-@RequestMapping("/api/game-events")
+@RequestMapping("/api/game/events")
 class GameEventController(
     private val repo: GameEventRepository,
     @Autowired private val resultRepo: GameResultRepository

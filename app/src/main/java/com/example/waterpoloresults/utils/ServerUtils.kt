@@ -2,6 +2,8 @@ package com.example.waterpoloresults.utils
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import commons.Game
+import commons.GameResult
 import commons.League
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -41,6 +43,32 @@ class ServerUtils(
             val leagueJson = response.body?.string()
             val mapper = jacksonObjectMapper()
             return mapper.readValue(leagueJson ?: "")
+        }
+    }
+
+    fun getGameById(id: Long): Game {
+        val request = Request.Builder()
+            .url("$httpUrl/api/games/$id")
+            .get()
+            .build()
+
+        client.newCall(request).execute().use {response ->
+            val gameJson = response.body?.string()
+            val mapper = jacksonObjectMapper()
+            return mapper.readValue(gameJson ?: "")
+        }
+    }
+
+    fun getGameResultByGameId(id: Long): GameResult {
+        val request = Request.Builder()
+            .url("$httpUrl/api/games/result/$id")
+            .get()
+            .build()
+
+        client.newCall(request).execute().use {response ->
+            val resultJson = response.body?.string()
+            val mapper = jacksonObjectMapper()
+            return mapper.readValue(resultJson ?: "")
         }
     }
 }

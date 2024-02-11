@@ -28,7 +28,7 @@ data class Game(
 
     @JsonManagedReference
     @OneToOne(mappedBy = "game", orphanRemoval = true, cascade = [CascadeType.ALL])
-    val result: GameResult? = null,
+    var result: GameResult? = null,
 
     @JsonManagedReference
     @OneToOne(mappedBy = "game", orphanRemoval = true, cascade = [CascadeType.ALL])

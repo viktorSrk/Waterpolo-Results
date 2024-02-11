@@ -40,15 +40,6 @@ class GameController(
         return ResponseEntity.ok(saved)
     }
 
-    @PostMapping(path = ["/addResult/{gameId}"])
-    fun setResult(@RequestBody result: GameResult, @PathVariable gameId: Long): ResponseEntity<GameResult> {
-        val assoc = repo.getReferenceById(gameId)
-        var saved: GameResult = resultRepo.save(result)
-        saved.game = assoc
-        saved = resultRepo.save(saved)
-        return ResponseEntity.ok(saved)
-    }
-
     @PostMapping(path = ["/addDsvInfo/{gameId}"])
     fun setDsvInfo(@RequestBody dsvInfo: GameDsvInfo, @PathVariable gameId: Long): ResponseEntity<GameDsvInfo> {
         val assoc = repo.getReferenceById(gameId)

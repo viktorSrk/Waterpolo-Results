@@ -1,5 +1,6 @@
 package com.example.waterpoloresults
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,7 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,15 +55,25 @@ class GamesActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Games(games.value)
+                    Games(
+                        games = games.value,
+                        onGameClick = { gameId -> openGameResultActivityForGame(gameId) }
+                    )
                 }
             }
         }
     }
+
+    private fun openGameResultActivityForGame(gameId: Long) {
+        val intent = Intent(this@GamesActivity, GameResultActivity::class.java).apply {
+            putExtra("gameId", gameId)
+        }
+        startActivity(intent)
+    }
 }
 
 @Composable
-fun Games(games: List<Game>, modifier: Modifier = Modifier) {
+fun Games(games: List<Game>, modifier: Modifier = Modifier, onGameClick: (Long) -> Unit = {}) {
 
     val gamesByMonth = games.groupBy {
         SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(it.date)
@@ -77,7 +90,11 @@ fun Games(games: List<Game>, modifier: Modifier = Modifier) {
                     Text(text = month, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(8.dp))
                 }
                 items(games) { g ->
-                    GameCard(game = g, modifier = Modifier.fillMaxWidth())
+                    GameCard(
+                        game = g,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onGameClick(g.id) }
+                    )
                 }
             }
         }
