@@ -29,16 +29,16 @@ import commons.gameevents.GoalGameEvent
 
 @Composable
 fun GameResultEventsSheet(
-    game: Game,
+    gameEvents: List<GameEvent>,
     modifier: Modifier = Modifier
 ){
 
-    val gameEventsPerQuarter = game.result?.gameEvents?.groupBy { it.quarter }
-        ?.toSortedMap { a, b -> a.compareTo(b)}
-        ?.mapValues { it.value.sortedByDescending { e -> e.time } }
+    val gameEventsPerQuarter = gameEvents.groupBy { it.quarter }
+        .toSortedMap { a, b -> a.compareTo(b)}
+        .mapValues { it.value.sortedByDescending { e -> e.time } }
 
     LazyColumn(modifier = modifier) {
-        gameEventsPerQuarter?.forEach { (period, events) ->
+        gameEventsPerQuarter.forEach { (period, events) ->
             item {
                 PeriodDivider(period = period, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
             }
@@ -190,20 +190,18 @@ fun GameEventText(event: GameEvent, modifier: Modifier = Modifier, show: Boolean
 @Composable
 fun GameResultEventsSheetPreview() {
     WaterpoloResultsTheme {
-        GameResultEventsSheet(Game(
-            result = GameResult(
-                gameEvents = listOf(
-                    GameEvent(quarter = 1, time = 441),
-                    GoalGameEvent(quarter = 1, time = 450,
-                        scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
-                    GoalGameEvent(quarter = 2, time = 321,
-                        scorerTeamHome = false, scorerName = "Ein Lutscher", scorerNumber = 4),
-                    GameEvent(quarter = 1, time = 398),
-                    GameEvent(quarter = 3, time = 423),
-                    GoalGameEvent(quarter = 2, time = 345,
-                        scorerTeamHome = true, scorerName = "J. Enwenaaaaaa", scorerNumber = 11)
-                )
+        GameResultEventsSheet(
+            gameEvents = listOf(
+                GameEvent(quarter = 1, time = 441),
+                GoalGameEvent(quarter = 1, time = 450,
+                    scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
+                GoalGameEvent(quarter = 2, time = 321,
+                    scorerTeamHome = false, scorerName = "Ein Lutscher", scorerNumber = 4),
+                GameEvent(quarter = 1, time = 398),
+                GameEvent(quarter = 3, time = 423),
+                GoalGameEvent(quarter = 2, time = 345,
+                    scorerTeamHome = true, scorerName = "J. Enwenaaaaaa", scorerNumber = 11)
             )
-        ))
+        )
     }
 }

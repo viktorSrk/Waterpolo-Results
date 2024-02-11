@@ -4,6 +4,7 @@ import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,11 +14,16 @@ import server.database.GameEventRepository
 import server.database.GameResultRepository
 
 @RestController
-@RequestMapping("/api/game/events")
+@RequestMapping("/api/games/events")
 class GameEventController(
     private val repo: GameEventRepository,
     @Autowired private val resultRepo: GameResultRepository
 ) {
+
+    @GetMapping(path = ["/{resultId}"])
+    fun getAllByResultId(@PathVariable resultId: Long): List<GameEvent> {
+        return resultRepo.getReferenceById(resultId).gameEvents
+    }
 
     @PostMapping(path = ["/add/{resultId}"])
     fun add(@RequestBody event: GameEvent, @PathVariable resultId: Long): ResponseEntity<GameEvent> {

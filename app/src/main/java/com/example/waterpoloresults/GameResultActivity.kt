@@ -39,6 +39,7 @@ class GameResultActivity : ComponentActivity() {
 
     private val game = mutableStateOf(Game())
     private val gameResult = mutableStateOf(GameResult())
+    private val gameEvents = mutableStateOf(emptyList<GameEvent>())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,17 +52,20 @@ class GameResultActivity : ComponentActivity() {
 
             val fetchedResult = sut.getGameResultByGameId(gameId)
             gameResult.value = fetchedResult
+
+            val fetchedEvents = sut.getGameEventsByGameResultId(fetchedResult.id)
+            gameEvents.value = fetchedEvents
         }
 
         setContent {
-            GameResultComposition(game.value, gameResult.value)
+            GameResultComposition(game.value, gameResult.value, gameEvents.value)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameResultComposition(game: Game, result: GameResult) {
+fun GameResultComposition(game: Game, result: GameResult, gameEvents: List<GameEvent>) {
     WaterpoloResultsTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -74,7 +78,7 @@ fun GameResultComposition(game: Game, result: GameResult) {
 
             BottomSheetScaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                sheetContent = { GameResultEventsSheet(game = game) },
+                sheetContent = { GameResultEventsSheet(gameEvents = gameEvents) },
                 topBar = { GameResultHeader(game = game)},
                 scaffoldState = scaffoldState,
                 sheetPeekHeight = 150.dp,
@@ -104,39 +108,39 @@ fun GreetingPreview2() {
                 country = "DEU",
                 region = "Hamburg",
                 name = "Hamburger Liga")
-    ),
+        ),
         result = GameResult(
             homeScore = arrayOf(2, 3, 1, 5),
             awayScore = arrayOf(0, 1, 2, 2),
-            finished = true,
-            gameEvents = listOf(
-                GameEvent(quarter = 1, time = 441),
-                GoalGameEvent(quarter = 1, time = 450,
-                    scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
-                GoalGameEvent(quarter = 2, time = 321,
-                    scorerTeamHome = false, scorerName = "Ein Lutscher", scorerNumber = 4),
-                GameEvent(quarter = 1, time = 398),
-                GameEvent(quarter = 3, time = 423),
-                GameEvent(quarter = 3, time = 423),
-                GameEvent(quarter = 3, time = 423),
-                GameEvent(quarter = 3, time = 423),
-                GameEvent(quarter = 3, time = 423),
-                GameEvent(quarter = 3, time = 423),
-                GameEvent(quarter = 3, time = 423),
-                GameEvent(quarter = 3, time = 423),
-                GoalGameEvent(quarter = 2, time = 345,
-                    scorerTeamHome = true, scorerName = "J. Enwenaaaaaa", scorerNumber = 11),
-                GoalGameEvent(quarter = 1, time = 450,
-                    scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
-                GoalGameEvent(quarter = 1, time = 450,
-                    scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
-                GoalGameEvent(quarter = 1, time = 450,
-                    scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
-                GoalGameEvent(quarter = 1, time = 450,
-                    scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
-                GoalGameEvent(quarter = 1, time = 450,
-                    scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12)
-            )
+            finished = true
+        ),
+        gameEvents = listOf(
+            GameEvent(quarter = 1, time = 441),
+            GoalGameEvent(quarter = 1, time = 450,
+                scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
+            GoalGameEvent(quarter = 2, time = 321,
+                scorerTeamHome = false, scorerName = "Ein Lutscher", scorerNumber = 4),
+            GameEvent(quarter = 1, time = 398),
+            GameEvent(quarter = 3, time = 423),
+            GameEvent(quarter = 3, time = 423),
+            GameEvent(quarter = 3, time = 423),
+            GameEvent(quarter = 3, time = 423),
+            GameEvent(quarter = 3, time = 423),
+            GameEvent(quarter = 3, time = 423),
+            GameEvent(quarter = 3, time = 423),
+            GameEvent(quarter = 3, time = 423),
+            GoalGameEvent(quarter = 2, time = 345,
+                scorerTeamHome = true, scorerName = "J. Enwenaaaaaa", scorerNumber = 11),
+            GoalGameEvent(quarter = 1, time = 450,
+                scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
+            GoalGameEvent(quarter = 1, time = 450,
+                scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
+            GoalGameEvent(quarter = 1, time = 450,
+                scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
+            GoalGameEvent(quarter = 1, time = 450,
+                scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
+            GoalGameEvent(quarter = 1, time = 450,
+                scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12)
         )
     )
 }

@@ -2,6 +2,8 @@ package commons.gameevents
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import commons.GameResult
 import jakarta.persistence.CascadeType
 import jakarta.persistence.DiscriminatorColumn
@@ -18,7 +20,15 @@ import jakarta.persistence.ManyToOne
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "event_type", discriminatorType = DiscriminatorType.STRING)
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "event_type"
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = GoalGameEvent::class, name = "GOAL")
+)
 open class GameEvent(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
