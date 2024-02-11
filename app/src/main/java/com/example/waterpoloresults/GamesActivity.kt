@@ -79,7 +79,7 @@ fun Games(games: List<Game>, modifier: Modifier = Modifier, onGameClick: (Long) 
         val date1 = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).parse(o1)!!
         val date2 = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).parse(o2)!!
         date1.compareTo(date2)
-    }
+    }.mapValues { it.value.sortedBy { a -> a.date } }
 
     Surface(modifier = modifier.fillMaxWidth()) {
         LazyColumn {
