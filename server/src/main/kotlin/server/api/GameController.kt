@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import server.database.GameDsvInfoRepository
 import server.database.GameRepository
-import server.database.GameResultRepository
 import server.database.LeagueRepository
 
 @RestController

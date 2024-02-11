@@ -22,8 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.waterpoloresults.R
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
-import commons.Game
-import commons.GameResult
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 
