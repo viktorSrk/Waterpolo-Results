@@ -8,6 +8,7 @@ import commons.LeagueDsvInfo
 import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
+import commons.gameevents.PenaltyGameEvent
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.extractIt
@@ -29,6 +30,7 @@ class Scraper(val websiteUrl: String) {
     data class GameEventListHolder(
         val goals: MutableList<GoalGameEvent> = mutableListOf(),
         val exclusions: MutableList<ExclusionGameEvent> = mutableListOf(),
+        val penalties: MutableList<PenaltyGameEvent> = mutableListOf(),
         val others: MutableList<GameEvent> = mutableListOf()
     )
 
@@ -250,6 +252,15 @@ class Scraper(val websiteUrl: String) {
                                         excludedTeamHome = eventFromHomeTeam
                                     ))
                                 }
+                                "S" -> {
+                                    result.penalties.add(PenaltyGameEvent(
+                                        time = eventTime,
+                                        quarter = eventQuarter,
+                                        penalizedName = eventPlayerName,
+                                        penalizedNumber = (if (eventFromHomeTeam) eventHomeLabel else eventAwayLabel).toInt(),
+                                        penalizedTeamHome = eventFromHomeTeam
+                                    ))
+                                }
                                 else -> {
                                     result.others.add(GameEvent(
                                         time = eventTime,
@@ -267,6 +278,6 @@ class Scraper(val websiteUrl: String) {
             }
         }
 
-        return gameEvents.goals + gameEvents.exclusions + gameEvents.others
+        return gameEvents.goals + gameEvents.exclusions + gameEvents.penalties + gameEvents.others
     }
 }

@@ -26,6 +26,7 @@ import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
+import commons.gameevents.PenaltyGameEvent
 
 @Composable
 fun GameResultEventsSheet(
@@ -89,6 +90,10 @@ fun GameEventRow(event: GameEvent, modifier: Modifier = Modifier) {
             specificTeamEvent = true
             homeTeamEvent = event.excludedTeamHome
         }
+        is PenaltyGameEvent -> {
+            specificTeamEvent = true
+            homeTeamEvent = event.penalizedTeamHome
+        }
         else -> {}
     }
 
@@ -141,6 +146,9 @@ fun GameEventType(event: GameEvent, modifier: Modifier = Modifier, show: Boolean
         is ExclusionGameEvent -> {
             iconDrawable = R.drawable.sports_whistle
         }
+        is PenaltyGameEvent -> {
+            iconDrawable = R.drawable.sports_5m
+        }
         else -> {}
     }
 
@@ -171,6 +179,10 @@ fun GameEventText(event: GameEvent, modifier: Modifier = Modifier, show: Boolean
             is ExclusionGameEvent -> {
                 primaryText = event.excludedName
                 secondaryText = "(${event.excludedNumber})"
+            }
+            is PenaltyGameEvent -> {
+                primaryText = event.penalizedName
+                secondaryText = "(${event.penalizedNumber})"
             }
             else -> {}
         }
@@ -205,10 +217,6 @@ fun GameResultEventsSheetPreview() {
                 gameEvents = listOf(
                     GameEvent(quarter = 1, time = 441),
                     GoalGameEvent(
-                        quarter = 1, time = 450,
-                        scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12
-                    ),
-                    GoalGameEvent(
                         quarter = 2, time = 321,
                         scorerTeamHome = false, scorerName = "Ein Lutscher", scorerNumber = 4
                     ),
@@ -218,9 +226,14 @@ fun GameResultEventsSheetPreview() {
                         quarter = 2, time = 345,
                         scorerTeamHome = true, scorerName = "J. Enwenaaaaaa", scorerNumber = 11
                     ),
+                    GoalGameEvent(
+                        scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12
+                    ),
                     ExclusionGameEvent(
-                        quarter = 2, time = 123,
                         excludedTeamHome = true, excludedName = "F. Lenger", excludedNumber = 3
+                    ),
+                    PenaltyGameEvent(
+                        penalizedTeamHome = true, penalizedName = "N. Sommer", penalizedNumber = 2
                     )
                 )
             )

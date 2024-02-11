@@ -19,7 +19,6 @@ import jakarta.persistence.ManyToOne
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "event_type", discriminatorType = DiscriminatorType.STRING)
-//@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
@@ -27,7 +26,8 @@ import jakarta.persistence.ManyToOne
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = GoalGameEvent::class, name = "GOAL"),
-    JsonSubTypes.Type(value = ExclusionGameEvent::class, name = "EXCLUSION")
+    JsonSubTypes.Type(value = ExclusionGameEvent::class, name = "EXCLUSION"),
+    JsonSubTypes.Type(value = PenaltyGameEvent::class, name = "PENALTY")
 )
 open class GameEvent(
     @Id
