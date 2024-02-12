@@ -21,7 +21,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-import com.example.waterpoloresults.ui.compose.GameResultEventsSheet
 import com.example.waterpoloresults.ui.compose.GameResultHeader
 import com.example.waterpoloresults.ui.compose.GameResultOverview
 import com.example.waterpoloresults.ui.compose.GameResultSheet

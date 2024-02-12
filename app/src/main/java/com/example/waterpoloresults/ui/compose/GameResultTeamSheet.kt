@@ -2,7 +2,6 @@ package com.example.waterpoloresults.ui.compose
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,18 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.waterpoloresults.R
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
-import commons.gameevents.ExclusionGameEvent
-import commons.gameevents.GameEvent
-import commons.gameevents.GoalGameEvent
-import commons.gameevents.PenaltyGameEvent
-import commons.gameevents.TimeoutGameEvent
 
 @Composable
 fun GameResultTeamSheet(
