@@ -108,12 +108,14 @@ fun GamesPreview() {
             home = "Hamburger Turnerbund v. 1862",
             away = "SV Poseidon Hamburg",
             date = 1700002003000,
-            result = GameResult(homeScore = arrayOf(2, 3, 1, 5), awayScore = arrayOf(0, 1, 2, 2), finished = true)),
+            result = GameResult(homeScore = arrayOf(2, 3, 1, 5), awayScore = arrayOf(0, 1, 2, 2), finished = true)
+        ),
         Game(
             home = "SV Poseidon Hamburg",
             away = "Hamburger Turnerbund v. 1862",
             date = 1710002003000,
-            result = GameResult(finished = false))
+            result = GameResult(finished = false)
+        )
     )
     WaterpoloResultsTheme {
         Games(dummyGames)

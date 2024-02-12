@@ -261,7 +261,7 @@ class Scraper(val websiteUrl: String) {
                                         time = eventTime,
                                         quarter = eventQuarter,
                                         penalizedName = eventPlayerName,
-                                        penalizedNumber = (if (eventFromHomeTeam) eventHomeLabel else eventAwayLabel).toInt(),
+                                        penalizedNumber = (if (eventFromHomeTeam) eventHomeLabel else eventAwayLabel).toIntOrNull() ?: 0,
                                         penalizedTeamHome = eventFromHomeTeam
                                     ))
                                 }
