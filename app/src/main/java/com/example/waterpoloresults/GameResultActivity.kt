@@ -31,6 +31,7 @@ import commons.League
 import commons.TeamSheet
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
+import commons.gameevents.TimeoutGameEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -141,6 +142,9 @@ fun GreetingPreview2() {
             GameEvent(quarter = 3, time = 423),
             GameEvent(quarter = 3, time = 423),
             GameEvent(quarter = 3, time = 423),
+            TimeoutGameEvent(quarter = 3, time = 423, teamHome = true),
+            TimeoutGameEvent(quarter = 3, time = 423, teamHome = true),
+            TimeoutGameEvent(quarter = 3, time = 423, teamHome = false),
             GoalGameEvent(quarter = 2, time = 345,
                 scorerTeamHome = true, scorerName = "J. Enwenaaaaaa", scorerNumber = 11),
             GoalGameEvent(quarter = 1, time = 450,

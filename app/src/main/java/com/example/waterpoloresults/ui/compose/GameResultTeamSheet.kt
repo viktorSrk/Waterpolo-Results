@@ -2,9 +2,11 @@ package com.example.waterpoloresults.ui.compose
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +32,8 @@ fun GameResultTeamSheet(
     playerNames: Map<Int, String?>,
     goals: Map<Int, Int>,
     fouls: Map<Int, Int>,
+    coach: String,
+    timeouts: Int,
     modifier: Modifier = Modifier) {
 
 
@@ -38,7 +42,7 @@ fun GameResultTeamSheet(
             TeamSheetHeader(modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp))
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
         items(playerNames.keys.toList()) { capNumber ->
             val playerName = playerNames[capNumber] ?: "Unknown player"
@@ -53,6 +57,20 @@ fun GameResultTeamSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
+            )
+        }
+        item {
+            val coachName = if (coach.isNotEmpty()) coach else "Unknown coach"
+
+            Divider(modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .padding(vertical = 16.dp))
+            CoachRow(
+                name = coachName,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                timeouts = timeouts
             )
         }
     }
@@ -136,6 +154,46 @@ fun TeamSheetHeader(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun CoachRow(name: String, timeouts: Int, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Coach",
+                style = MaterialTheme.typography.labelMedium
+            )
+            Text(
+                text = name,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.End
+        ) {
+            Text(
+                text = "Timeouts",
+                style = MaterialTheme.typography.labelMedium
+            )
+            Row(
+                verticalAlignment = Alignment.Bottom
+            ) {
+                for (i in 1..timeouts) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.sports_tactics),
+                        contentDescription = "Timeout",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .height(20.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true, widthDp = 320, heightDp = 690)
 @Preview(showBackground = true, widthDp = 320, heightDp = 690,
     uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -163,7 +221,9 @@ fun GameResultTeamSheetPreview() {
                     11 to 12,
                     12 to 5
                 ),
-                fouls = mapOf()
+                fouls = mapOf(),
+                coach = "Anders, Bernd",
+                timeouts = 2
             )
         }
     }

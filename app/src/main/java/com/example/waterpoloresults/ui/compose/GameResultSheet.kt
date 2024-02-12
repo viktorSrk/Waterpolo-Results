@@ -73,11 +73,19 @@ fun GameResultSheet(
                 foulsMap.merge(number, penalties) { v1, v2 -> v1 + v2 }
             }
 
+            val coach = teamSheets[state/2].coach
+
+            val timeouts = gameEvents.filterIsInstance<TimeoutGameEvent>()
+                .filter { it.teamHome == (state == 0) }
+                .size
+
             GameResultTeamSheet(
                 playerNames = playerNames,
                 goals = goalsMap,
                 fouls = foulsMap,
-                modifier = Modifier.padding(8.dp)
+                coach = coach,
+                modifier = Modifier.padding(8.dp),
+                timeouts = timeouts
             )
         }
     }
@@ -124,7 +132,8 @@ fun GameResultSheetPreview() {
                             TeamSheet.Player(number = 3, name = "Lenger, Fynn"),
                             TeamSheet.Player(number = 11, name = "Enwena, Joseph"),
                             TeamSheet.Player(number = 12, name = "Sersik, Viktor")
-                        )
+                        ),
+                        coach = "Müller, Lutz"
                     ),
                     TeamSheet(
                         players = listOf(
