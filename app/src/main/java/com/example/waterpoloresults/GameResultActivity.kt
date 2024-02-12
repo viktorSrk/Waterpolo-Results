@@ -28,6 +28,7 @@ import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.Game
 import commons.GameResult
 import commons.League
+import commons.TeamSheet
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +43,7 @@ class GameResultActivity : ComponentActivity() {
     private val game = mutableStateOf(Game())
     private val gameResult = mutableStateOf(GameResult())
     private val gameEvents = mutableStateOf(emptyList<GameEvent>())
+    private val teamSheets = mutableStateOf(emptyList<TeamSheet>())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,17 +59,20 @@ class GameResultActivity : ComponentActivity() {
 
             val fetchedEvents = sut.getGameEventsByGameResultId(fetchedResult.id)
             gameEvents.value = fetchedEvents
+
+            val fetchedTeamSheets = sut.getTeamSheetsByGameId(gameId)
+            teamSheets.value = fetchedTeamSheets
         }
 
         setContent {
-            GameResultComposition(game.value, gameResult.value, gameEvents.value)
+            GameResultComposition(game.value, gameResult.value, gameEvents.value, teamSheets.value)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameResultComposition(game: Game, result: GameResult, gameEvents: List<GameEvent>) {
+fun GameResultComposition(game: Game, result: GameResult, gameEvents: List<GameEvent>, teamSheets: List<TeamSheet>) {
     WaterpoloResultsTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -80,7 +85,12 @@ fun GameResultComposition(game: Game, result: GameResult, gameEvents: List<GameE
 
             BottomSheetScaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                sheetContent = { Box(modifier = Modifier.fillMaxHeight()) {GameResultSheet(gameEvents = gameEvents)} },
+                sheetContent = { Box(modifier = Modifier.fillMaxHeight()) {
+                    GameResultSheet(
+                        gameEvents = gameEvents,
+                        teamSheets = teamSheets
+                    )
+                } },
                 topBar = { GameResultHeader(game = game)},
                 scaffoldState = scaffoldState,
                 sheetPeekHeight = 150.dp,
@@ -143,6 +153,22 @@ fun GreetingPreview2() {
                 scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12),
             GoalGameEvent(quarter = 1, time = 450,
                 scorerTeamHome = true, scorerName = "V. Sersik", scorerNumber = 12)
+        ),
+        teamSheets = listOf(
+            TeamSheet(
+                players = listOf(
+                    TeamSheet.Player(number = 1, name = "Heins, Lasse"),
+                    TeamSheet.Player(number = 2, name = "Sommer, Nils"),
+                    TeamSheet.Player(number = 3, name = "Lenger, Fynn"),
+                    TeamSheet.Player(number = 11, name = "Enwena, Joseph"),
+                    TeamSheet.Player(number = 12, name = "Sersik, Viktor")
+                )
+            ),
+            TeamSheet(
+                players = listOf(
+                    TeamSheet.Player(number = 4, name = "Lutscher, Ein")
+                )
+            )
         )
     )
 }

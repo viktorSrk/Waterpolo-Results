@@ -27,7 +27,7 @@ import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 
 @Composable
 fun GameResultTeamSheet(
-    teamSheet: Map<Int, String?>,
+    playerNames: Map<Int, String?>,
     goals: Map<Int, Int>,
     fouls: Map<Int, Int>,
     modifier: Modifier = Modifier) {
@@ -40,8 +40,8 @@ fun GameResultTeamSheet(
                 .padding(8.dp))
             Divider(modifier = Modifier.padding(horizontal = 16.dp))
         }
-        items(teamSheet.keys.toList()) {capNumber ->
-            val playerName = teamSheet[capNumber] ?: "Unknown player"
+        items(playerNames.keys.toList()) { capNumber ->
+            val playerName = playerNames[capNumber] ?: "Unknown player"
             val goalsScored = goals[capNumber] ?: 0
             val foulsCommited = fouls[capNumber] ?: 0
 
@@ -144,7 +144,7 @@ fun GameResultTeamSheetPreview() {
     WaterpoloResultsTheme {
         Surface {
             GameResultTeamSheet(
-                teamSheet = mapOf(
+                playerNames = mapOf(
                     1 to "Lasse Heins",
                     2 to "Moritz Cantzler",
                     3 to "Kim Dröse",

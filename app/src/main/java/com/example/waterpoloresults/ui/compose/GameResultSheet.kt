@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.waterpoloresults.R
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
+import commons.TeamSheet
 import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
@@ -28,6 +29,7 @@ import commons.gameevents.TimeoutGameEvent
 @Composable
 fun GameResultSheet(
     gameEvents: List<GameEvent>,
+    teamSheets: List<TeamSheet>,
     modifier: Modifier = Modifier
 ) {
     var state by remember { mutableStateOf(1) }
@@ -50,11 +52,13 @@ fun GameResultSheet(
         if (state == 1) {
             GameResultEventsSheet(gameEvents = gameEvents, modifier = Modifier.padding(8.dp))
         } else {
-            val teamSheet = mapOf<Int, String?>(1 to null, 2 to null, 3 to null, 4 to null, 5 to null, 6 to null, 7 to null, 8 to null, 9 to null, 10 to null, 11 to null, 12 to null, 13 to null)
+            val playerNames = teamSheets[state/2].players.map { it.number to it.name }.toMap()
+
             val goalsMap = gameEvents.filterIsInstance<GoalGameEvent>()
                 .filter { it.scorerTeamHome == (state == 0)}
                 .groupBy { it.scorerNumber }
                 .mapValues { it.value.size }
+
             val exclusionsMap = gameEvents.filterIsInstance<ExclusionGameEvent>()
                 .filter { it.excludedTeamHome == (state == 0)}
                 .groupBy { it.excludedNumber }
@@ -70,7 +74,7 @@ fun GameResultSheet(
             }
 
             GameResultTeamSheet(
-                teamSheet = teamSheet,
+                playerNames = playerNames,
                 goals = goalsMap,
                 fouls = foulsMap,
                 modifier = Modifier.padding(8.dp)
@@ -110,6 +114,22 @@ fun GameResultSheetPreview() {
                     ),
                     TimeoutGameEvent(
                         teamHome = true
+                    )
+                ),
+                teamSheets = listOf(
+                    TeamSheet(
+                        players = listOf(
+                            TeamSheet.Player(number = 1, name = "Heins, Lasse"),
+                            TeamSheet.Player(number = 2, name = "Sommer, Nils"),
+                            TeamSheet.Player(number = 3, name = "Lenger, Fynn"),
+                            TeamSheet.Player(number = 11, name = "Enwena, Joseph"),
+                            TeamSheet.Player(number = 12, name = "Sersik, Viktor")
+                        )
+                    ),
+                    TeamSheet(
+                        players = listOf(
+                            TeamSheet.Player(number = 4, name = "Lutscher, Ein")
+                        )
                     )
                 )
             )

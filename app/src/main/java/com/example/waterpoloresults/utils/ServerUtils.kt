@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import commons.Game
 import commons.GameResult
 import commons.League
+import commons.TeamSheet
 import commons.gameevents.GameEvent
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -83,6 +84,19 @@ class ServerUtils(
             val eventsJson = response.body?.string()
             val mapper = jacksonObjectMapper()
             return mapper.readValue(eventsJson ?: "")
+        }
+    }
+
+    fun getTeamSheetsByGameId(gameId: Long): List<TeamSheet> {
+        val request = Request.Builder()
+            .url("$httpUrl/api/games/teamsheets/$gameId")
+            .get()
+            .build()
+
+        client.newCall(request).execute().use {response ->
+            val teamSheetsJson = response.body?.string()
+            val mapper = jacksonObjectMapper()
+            return mapper.readValue(teamSheetsJson ?: "")
         }
     }
 }
