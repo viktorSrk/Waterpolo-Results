@@ -4,6 +4,8 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
@@ -22,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.waterpoloresults.ui.compose.GameResultEventsSheet
 import com.example.waterpoloresults.ui.compose.GameResultHeader
 import com.example.waterpoloresults.ui.compose.GameResultOverview
+import com.example.waterpoloresults.ui.compose.GameResultSheet
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.Game
 import commons.GameResult
@@ -78,7 +81,7 @@ fun GameResultComposition(game: Game, result: GameResult, gameEvents: List<GameE
 
             BottomSheetScaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                sheetContent = { GameResultEventsSheet(gameEvents = gameEvents) },
+                sheetContent = { Box(modifier = Modifier.fillMaxHeight()) {GameResultSheet(gameEvents = gameEvents)} },
                 topBar = { GameResultHeader(game = game)},
                 scaffoldState = scaffoldState,
                 sheetPeekHeight = 150.dp,
