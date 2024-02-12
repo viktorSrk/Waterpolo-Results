@@ -11,6 +11,7 @@ import server.api.GameController
 import server.api.GameEventController
 import server.api.GameResultController
 import server.api.LeagueController
+import server.api.TeamSheetController
 
 @SpringBootApplication
 @EntityScan(basePackages = ["commons", "server"])
@@ -24,6 +25,7 @@ fun main(args: Array<String>) {
 	val gameController: GameController = context.getBean(GameController::class.java)
 	val gameResultController: GameResultController = context.getBean(GameResultController::class.java)
 	val gameEventController: GameEventController = context.getBean(GameEventController::class.java)
+	val teamSheetController: TeamSheetController = context.getBean(TeamSheetController::class.java)
 
 	while (true) {
 		val leagues: List<League> = dsvScraper.scrapeLeagues()
@@ -47,6 +49,9 @@ fun main(args: Array<String>) {
 
 				val gameEvents = dsvScraper.scrapeGameEvents(result)
 				gameEventController.addAllEvents(gameEvents, result.id)
+
+				val teamSheets = dsvScraper.scrapeTeamSheets(result)
+				teamSheetController.addTeamSheets(teamSheets, result.id)
 			}
 		}
 	}
