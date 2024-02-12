@@ -5,6 +5,7 @@ import commons.GameDsvInfo
 import commons.GameResult
 import commons.League
 import commons.LeagueDsvInfo
+import commons.TeamSheet
 import commons.gameevents.ExclusionGameEvent
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
@@ -35,6 +36,7 @@ class Scraper(val websiteUrl: String) {
         val timeouts: MutableList<TimeoutGameEvent> = mutableListOf(),
         val others: MutableList<GameEvent> = mutableListOf()
     )
+    data class TeamSheetHolder(val teamSheets: MutableList<TeamSheet> = mutableListOf())
 
     fun scrapeLeagues(): List<League> {
         val leagues = skrape(HttpFetcher) {
@@ -292,5 +294,48 @@ class Scraper(val websiteUrl: String) {
                 gameEvents.penalties +
                 gameEvents.timeouts +
                 gameEvents.others
+    }
+
+    fun scrapeTeamSheets(result: GameResult): List<TeamSheet> {
+        if (result.game == null || result.game!!.dsvInfo == null) return emptyList()
+
+        val teamSheet = skrape(HttpFetcher) {
+            request {
+                url = websiteUrl + result.game!!.dsvInfo!!.buildGameLink()
+            }
+
+            extractIt<TeamSheetHolder> { result ->
+                htmlDocument {
+                    val statsContainer = findFirst("#stats").findAll("tbody")
+                    statsContainer.forEach {
+                        val rows = it.findAll("tr")
+
+                        val players = mutableListOf<TeamSheet.Player>()
+                        for (r in rows) {
+                            val number = r.children[0].text.toIntOrNull() ?: continue
+                            val name = r.children[1].text
+                            players.add(TeamSheet.Player(number, name))
+                        }
+
+                        val coach: String = try {
+                            it.findFirst("#ContentSection__whitecoachLabel").text.drop("Trainer: ".length)
+                        } catch(e: ElementNotFoundException) {
+                            try {
+                                it.findFirst("#ContentSection__bluecoachLabel").text.drop("Trainer: ".length)
+                            } catch(e: ElementNotFoundException) {
+                                ""
+                            }
+                        }
+
+                        result.teamSheets.add(TeamSheet(
+                            players = players.toList(),
+                            coach = coach
+                        ))
+                    }
+                }
+            }
+        }
+
+        return teamSheet.teamSheets
     }
 }

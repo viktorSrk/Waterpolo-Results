@@ -25,6 +25,10 @@ data class GameResult(
     @OneToMany(mappedBy = "gameResult", orphanRemoval = true, targetEntity = GameEvent::class)
     var gameEvents: List<GameEvent> = emptyList(),
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "gameResult", orphanRemoval = true)
+    var teamSheets: List<TeamSheet> = emptyList(),
+
     @JsonBackReference
     @OneToOne
     @JoinColumn(name = "game_id", referencedColumnName = "id")
