@@ -42,10 +42,10 @@ fun GameResultEventsSheet(
     LazyColumn(modifier = modifier) {
         gameEventsPerQuarter.forEach { (period, events) ->
             item {
-                PeriodDivider(period = period, modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+                PeriodDivider(period = period, modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp))
             }
             items(events) { e ->
-                GameEventRow(event = e, modifier = Modifier.padding(8.dp))
+                GameEventRow(event = e, modifier = Modifier.padding(vertical = 8.dp))
             }
         }
         item {

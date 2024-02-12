@@ -56,7 +56,7 @@ fun GameResultSheet(
             }
         }
         if (state == 1) {
-            GameResultEventsSheet(gameEvents = gameEvents)
+            GameResultEventsSheet(gameEvents = gameEvents, modifier = Modifier.padding(8.dp))
         } else {
             val teamSheet = mapOf<Int, String?>(1 to null, 2 to null, 3 to null, 4 to null, 5 to null, 6 to null, 7 to null, 8 to null, 9 to null, 10 to null, 11 to null, 12 to null, 13 to null)
             val goalsMap = gameEvents.filterIsInstance<GoalGameEvent>()
@@ -81,6 +81,7 @@ fun GameResultSheet(
                 teamSheet = teamSheet,
                 goals = goalsMap,
                 fouls = foulsMap,
+                modifier = Modifier.padding(8.dp)
             )
         }
     }
