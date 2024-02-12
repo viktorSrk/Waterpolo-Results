@@ -6,7 +6,6 @@ import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Embeddable
-import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -23,7 +22,7 @@ data class TeamSheet(
     @ElementCollection
     @CollectionTable(name = "player", joinColumns = [JoinColumn(name = "team_sheet_id")])
     @Column(name = "player")
-    val players: List<TeamSheet.Player> = emptyList(),
+    val players: List<Player> = emptyList(),
 
     val coach: String = "",
 
