@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun openGamesActivityForLeague(league: League) {
-        val intent = Intent(this@MainActivity, GamesActivity::class.java).apply {
+        val intent = Intent(this@MainActivity, LeagueActivity::class.java).apply {
             putExtra("leagueId", league.id)
         }
         startActivity(intent)
