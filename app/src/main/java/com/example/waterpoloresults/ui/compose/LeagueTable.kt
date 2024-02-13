@@ -33,7 +33,7 @@ fun TableCompact(
 
     val teamsListSorted = positions.toList().sortedBy{ it.second }.map{ it.first }
 
-    Column {
+    Column(modifier = modifier) {
     TableHeader(modifier = Modifier.padding(8.dp).padding(horizontal = 8.dp))
         Column(
             verticalArrangement = Arrangement.Top

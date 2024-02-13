@@ -81,7 +81,7 @@ fun Games(games: List<Game>, modifier: Modifier = Modifier, onGameClick: (Long) 
         date1.compareTo(date2)
     }.mapValues { it.value.sortedBy { a -> a.date } }
 
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         gamesByMonth.forEach { (month, games) ->
             item {
                 Text(text = month, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(8.dp))
