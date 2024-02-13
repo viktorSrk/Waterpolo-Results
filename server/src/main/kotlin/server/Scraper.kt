@@ -252,7 +252,7 @@ class Scraper(val websiteUrl: String) {
                                         time = eventTime,
                                         quarter = eventQuarter,
                                         excludedName = eventPlayerName,
-                                        excludedNumber = (if (eventFromHomeTeam) eventHomeLabel else eventAwayLabel).toInt(),
+                                        excludedNumber = (if (eventFromHomeTeam) eventHomeLabel else eventAwayLabel).toIntOrNull() ?: 0,
                                         excludedTeamHome = eventFromHomeTeam
                                     ))
                                 }
