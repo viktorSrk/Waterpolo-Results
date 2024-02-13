@@ -48,7 +48,7 @@ class GamesActivity : ComponentActivity() {
 
         setContent {
             WaterpoloResultsTheme {
-                // A surface container using the 'background' color from the theme
+//                 A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -81,19 +81,17 @@ fun Games(games: List<Game>, modifier: Modifier = Modifier, onGameClick: (Long) 
         date1.compareTo(date2)
     }.mapValues { it.value.sortedBy { a -> a.date } }
 
-    Surface(modifier = modifier.fillMaxWidth()) {
-        LazyColumn {
-            gamesByMonth.forEach { (month, games) ->
-                item {
-                    Text(text = month, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(8.dp))
-                }
-                items(games) { g ->
-                    GameCard(
-                        game = g,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onGameClick(g.id) }
-                    )
-                }
+    LazyColumn(modifier = modifier) {
+        gamesByMonth.forEach { (month, games) ->
+            item {
+                Text(text = month, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(8.dp))
+            }
+            items(games) { g ->
+                GameCard(
+                    game = g,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onGameClick(g.id) }
+                )
             }
         }
     }
@@ -108,14 +106,18 @@ fun GamesPreview() {
             home = "Hamburger Turnerbund v. 1862",
             away = "SV Poseidon Hamburg",
             date = 1700002003000,
-            result = GameResult(homeScore = arrayOf(2, 3, 1, 5), awayScore = arrayOf(0, 1, 2, 2), finished = true)),
+            result = GameResult(homeScore = arrayOf(2, 3, 1, 5), awayScore = arrayOf(0, 1, 2, 2), finished = true)
+        ),
         Game(
             home = "SV Poseidon Hamburg",
             away = "Hamburger Turnerbund v. 1862",
             date = 1710002003000,
-            result = GameResult(finished = false))
+            result = GameResult(finished = false)
+        )
     )
     WaterpoloResultsTheme {
-        Games(dummyGames)
+        Surface {
+            Games(dummyGames)
+        }
     }
 }
