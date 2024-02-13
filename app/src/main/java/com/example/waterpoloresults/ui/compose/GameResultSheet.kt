@@ -1,22 +1,22 @@
 package com.example.waterpoloresults.ui.compose
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.waterpoloresults.R
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.TeamSheet
@@ -25,68 +25,85 @@ import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import commons.gameevents.PenaltyGameEvent
 import commons.gameevents.TimeoutGameEvent
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GameResultSheet(
     gameEvents: List<GameEvent>,
     teamSheets: List<TeamSheet>,
     modifier: Modifier = Modifier
 ) {
-    var state by remember { mutableStateOf(1) }
+    val state = rememberPagerState(initialPage = 1) {
+        3
+    }
     val tabTitles = listOf("Home", "Events", "Away")
     val tabIcons = listOf(R.drawable.team_filled, R.drawable.timer, R.drawable.team_outline)
 
     Column(modifier = modifier) {
         TabRow(
-            selectedTabIndex = state
+            selectedTabIndex = state.currentPage
         ) {
+            val coroutineScope = rememberCoroutineScope()
             tabTitles.forEachIndexed { index, tab ->
                 Tab(
-                    selected = state == index,
-                    onClick = { state = index },
+                    selected = state.currentPage == index,
+                    onClick = { coroutineScope.launch { state.animateScrollToPage(index) } },
 //                    text = { Text(tab)},
                     icon = { Icon(painter = painterResource(id = tabIcons[index]), contentDescription = null) }
                 )
             }
         }
-        if (state == 1) {
-            GameResultEventsSheet(gameEvents = gameEvents, modifier = Modifier.padding(8.dp))
-        } else {
-            val playerNames = teamSheets[state/2].players.map { it.number to it.name }.toMap()
+        GameResultSheetPager(state = state, gameEvents = gameEvents, teamSheets = teamSheets, modifier = Modifier.weight(1f))
+    }
+}
 
-            val goalsMap = gameEvents.filterIsInstance<GoalGameEvent>()
-                .filter { it.scorerTeamHome == (state == 0)}
-                .groupBy { it.scorerNumber }
-                .mapValues { it.value.size }
-
-            val exclusionsMap = gameEvents.filterIsInstance<ExclusionGameEvent>()
-                .filter { it.excludedTeamHome == (state == 0)}
-                .groupBy { it.excludedNumber }
-                .mapValues { it.value.size }
-            val penaltiesMap = gameEvents.filterIsInstance<PenaltyGameEvent>()
-                .filter { it.penalizedTeamHome == (state == 0)}
-                .groupBy { it.penalizedNumber }
-                .mapValues { it.value.size }
-            val foulsMap = mutableMapOf<Int, Int>()
-            foulsMap.putAll(exclusionsMap)
-            penaltiesMap.forEach { (number, penalties) ->
-                foulsMap.merge(number, penalties) { v1, v2 -> v1 + v2 }
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun GameResultSheetPager(
+    state: PagerState,
+    gameEvents: List<GameEvent>,
+    teamSheets: List<TeamSheet>,
+    modifier: Modifier = Modifier
+) {
+    HorizontalPager(state = state, modifier = modifier, verticalAlignment = Alignment.Top) {pageIndex ->
+        when(pageIndex) {
+            1 -> {
+                GameResultEventsSheet(gameEvents = gameEvents)
             }
+            else -> {
+                val teamSheetOfTeam = teamSheets[pageIndex/2]
+                
+                val playerNames = teamSheetOfTeam.players.map { it.number to it.name }.toMap()
+                val coach = teamSheetOfTeam.coach
 
-            val coach = teamSheets[state/2].coach
+                val goals = gameEvents.filter { it is GoalGameEvent && it.scorerTeamHome == (pageIndex == 0) }
+                    .groupBy { (it as GoalGameEvent).scorerNumber }
+                    .mapValues { it.value.size }
 
-            val timeouts = gameEvents.filterIsInstance<TimeoutGameEvent>()
-                .filter { it.teamHome == (state == 0) }
-                .size
+                val fouls = mutableMapOf<Int, Int>()
+                fouls.putAll(
+                    gameEvents.filter{ it is ExclusionGameEvent && it.excludedTeamHome == (pageIndex == 0) }
+                        .groupBy { (it as ExclusionGameEvent).excludedNumber }
+                        .mapValues { it.value.size }
+                )
+                gameEvents.filter{it is PenaltyGameEvent && it.penalizedTeamHome == (pageIndex == 0) }
+                    .groupBy { (it as PenaltyGameEvent).penalizedNumber }
+                    .mapValues { it.value.size }
+                    .forEach {(number, penalties) ->
+                        fouls.merge(number, penalties) { v1, v2 -> v1 + v2 }
+                    }
 
-            GameResultTeamSheet(
-                playerNames = playerNames,
-                goals = goalsMap,
-                fouls = foulsMap,
-                coach = coach,
-                modifier = Modifier.padding(8.dp),
-                timeouts = timeouts
-            )
+                val timeouts = gameEvents.filter{ it is TimeoutGameEvent && it.teamHome == (pageIndex == 0) }.size
+
+                GameResultTeamSheet(
+                    playerNames = playerNames,
+                    goals = goals,
+                    fouls = fouls,
+                    coach = coach,
+                    timeouts = timeouts
+                )
+            }
         }
     }
 }
