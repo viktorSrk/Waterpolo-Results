@@ -1,4 +1,4 @@
-package com.example.waterpoloresults.ui.compose
+package com.example.waterpoloresults.ui.compose.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement

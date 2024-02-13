@@ -16,7 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
-import com.example.waterpoloresults.ui.compose.CountryCard
+import com.example.waterpoloresults.ui.compose.components.CountryCard
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import com.example.waterpoloresults.utils.ServerUtils
 import commons.League

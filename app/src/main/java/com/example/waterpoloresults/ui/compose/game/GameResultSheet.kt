@@ -1,4 +1,4 @@
-package com.example.waterpoloresults.ui.compose
+package com.example.waterpoloresults.ui.compose.game
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -69,7 +69,7 @@ fun GameResultSheetPager(
     HorizontalPager(state = state, modifier = modifier, verticalAlignment = Alignment.Top) {pageIndex ->
         when(pageIndex) {
             1 -> {
-                GameResultEventsSheet(gameEvents = gameEvents)
+                EventsSheet(gameEvents = gameEvents)
             }
             else -> {
                 val teamSheetOfTeam = teamSheets[pageIndex/2]
@@ -96,7 +96,7 @@ fun GameResultSheetPager(
 
                 val timeouts = gameEvents.filter{ it is TimeoutGameEvent && it.teamHome == (pageIndex == 0) }.size
 
-                GameResultTeamSheet(
+                TeamStatsSheet(
                     playerNames = playerNames,
                     goals = goals,
                     fouls = fouls,
