@@ -2,7 +2,10 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="ExampleInstrumentedTest">
+      <entry key="GameResultSheetPreview">
+        <State />
+      </entry>
+      <entry key="GreetingPreview2">
         <State />
       </entry>
       <entry key="app">
