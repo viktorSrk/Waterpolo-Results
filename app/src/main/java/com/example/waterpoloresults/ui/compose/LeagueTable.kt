@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,24 +33,20 @@ fun TableCompact(
 
     val teamsListSorted = positions.toList().sortedBy{ it.second }.map{ it.first }
 
-    Card(modifier = modifier) {
-        Column {
-            TableHeader(modifier = Modifier.padding(8.dp).padding(horizontal = 8.dp))
-            ElevatedCard(modifier = Modifier.padding(horizontal = 8.dp).padding(bottom = 8.dp)) {
-                Column(
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    teamsListSorted.forEach { team ->
-                        TableTeamRow(
-                            modifier = Modifier.padding(8.dp),
-                            position = positions[team] ?: 999,
-                            team = team,
-                            mp = mp[team] ?: 0,
-                            pts = pts[team] ?: 0,
-                            dif = dif[team] ?: 0
-                        )
-                    }
-                }
+    Column {
+    TableHeader(modifier = Modifier.padding(8.dp).padding(horizontal = 8.dp))
+        Column(
+            verticalArrangement = Arrangement.Top
+        ) {
+            teamsListSorted.forEach { team ->
+                TableTeamRow(
+                    modifier = Modifier.padding(8.dp),
+                    position = positions[team] ?: 999,
+                    team = team,
+                    mp = mp[team] ?: 0,
+                    pts = pts[team] ?: 0,
+                    dif = dif[team] ?: 0
+                )
             }
         }
     }

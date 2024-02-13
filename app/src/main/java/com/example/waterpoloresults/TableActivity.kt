@@ -39,7 +39,13 @@ class TableActivity : ComponentActivity() {
         }
 
         setContent {
-            TablesComposition(games.value)
+            WaterpoloResultsTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    TablesComposition(games.value)
+                }
+            }
         }
     }
 }
@@ -82,18 +88,12 @@ fun TablesComposition(games: List<Game>) {
 
     positions.putAll(calculatePositions(positions.keys.toList(), pts, dif))
 
-    WaterpoloResultsTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            LazyColumn {
-                item {
-                    TableCompact(
-                        modifier = Modifier.padding(8.dp),
-                        positions = positions, mp = mp, pts = pts, dif = dif
-                    )
-                }
-            }
+    LazyColumn {
+        item {
+            TableCompact(
+                modifier = Modifier.padding(8.dp),
+                positions = positions, mp = mp, pts = pts, dif = dif
+            )
         }
     }
 }
@@ -118,7 +118,13 @@ fun TableCompositionPreview() {
         )
     )
 
-    TablesComposition(dummyGames)
+    WaterpoloResultsTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            TablesComposition(dummyGames)
+        }
+    }
 }
 
 fun calculatePositions(teams: List<String>, pts: Map<String, Int>, dif: Map<String, Int>): Map<String, Int> {

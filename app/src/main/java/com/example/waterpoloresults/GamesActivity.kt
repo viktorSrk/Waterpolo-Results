@@ -48,7 +48,7 @@ class GamesActivity : ComponentActivity() {
 
         setContent {
             WaterpoloResultsTheme {
-                // A surface container using the 'background' color from the theme
+//                 A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -81,19 +81,17 @@ fun Games(games: List<Game>, modifier: Modifier = Modifier, onGameClick: (Long) 
         date1.compareTo(date2)
     }.mapValues { it.value.sortedBy { a -> a.date } }
 
-    Surface(modifier = modifier.fillMaxWidth()) {
-        LazyColumn {
-            gamesByMonth.forEach { (month, games) ->
-                item {
-                    Text(text = month, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(8.dp))
-                }
-                items(games) { g ->
-                    GameCard(
-                        game = g,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { onGameClick(g.id) }
-                    )
-                }
+    LazyColumn {
+        gamesByMonth.forEach { (month, games) ->
+            item {
+                Text(text = month, style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(8.dp))
+            }
+            items(games) { g ->
+                GameCard(
+                    game = g,
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onGameClick(g.id) }
+                )
             }
         }
     }
@@ -118,6 +116,8 @@ fun GamesPreview() {
         )
     )
     WaterpoloResultsTheme {
-        Games(dummyGames)
+        Surface {
+            Games(dummyGames)
+        }
     }
 }
