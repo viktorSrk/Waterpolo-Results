@@ -9,16 +9,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.waterpoloresults.temp.LeagueActivity
 import com.example.waterpoloresults.ui.compose.components.TableCompact
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
+import com.example.waterpoloresults.utils.TableInfo
 import commons.Game
 import commons.GameResult
 
 @Composable
 fun TablesList(games: List<Game>) {
 
-    val tableInfo = LeagueActivity.TableInfo.createTable(games)
+    val tableInfo = TableInfo.createTable(games)
 
     val positions = tableInfo.positions
     val mp = tableInfo.mp
