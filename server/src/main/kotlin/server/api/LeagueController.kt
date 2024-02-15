@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -30,7 +31,8 @@ class LeagueController(
     @PostMapping(path = ["", "/"])
     fun addLeague(@RequestBody league: League): ResponseEntity<League> {
         if (getLeagues().contains(league)) {
-            return ResponseEntity.badRequest().build()
+            val existing = getLeagues().find { it == league }
+            return ResponseEntity.ok(existing)
         }
 
         val saved: League = repo.save(league)
@@ -43,6 +45,15 @@ class LeagueController(
     @PostMapping(path = ["/addDsvInfo/{leagueId}"])
     fun setDsvInfo(@RequestBody dsvInfo: LeagueDsvInfo, @PathVariable leagueId: Long): ResponseEntity<LeagueDsvInfo> {
         val assoc = repo.getReferenceById(leagueId)
+        if (assoc.dsvInfo != null) {
+            val toUpdate = assoc.dsvInfo
+            toUpdate!!.dsvLeagueSeason = dsvInfo.dsvLeagueSeason
+            toUpdate.dsvLeagueId = dsvInfo.dsvLeagueId
+            toUpdate.dsvLeagueGroup = dsvInfo.dsvLeagueGroup
+            toUpdate.dsvLeagueKind = dsvInfo.dsvLeagueKind
+            val saved: LeagueDsvInfo = dsvRepo.save(toUpdate)
+            return ResponseEntity.ok(saved)
+        }
         var saved: LeagueDsvInfo = dsvRepo.save(dsvInfo)
         saved.league = assoc
         saved = dsvRepo.save(saved)

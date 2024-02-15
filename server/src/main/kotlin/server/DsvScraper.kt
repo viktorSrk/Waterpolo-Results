@@ -25,7 +25,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class Scraper(val websiteUrl: String) {
+class DsvScraper(val websiteUrl: String) {
 
     data class LeagueSetHolder(val set: MutableSet<League> = mutableSetOf())
     data class GameSetHolder(val set: MutableSet<Game> = mutableSetOf())
@@ -80,6 +80,51 @@ class Scraper(val websiteUrl: String) {
                     }
                 }
             }
+        }
+
+        return leagues.set.toList()
+    }
+
+    /**
+     * dsvLeagueIds Map<leagueId, Map<leagueKind, List<LeagueGroup>>>
+     */
+    fun scrapeCertainLeagues(
+        dsvLeagueIds: Map<Int, Map<String, List<String>>>,
+        leagueNames: Map<Int, String>,
+        leagueRegions: Map<Int, String>
+    ): List<League> {
+        val leagues = LeagueSetHolder()
+
+        for (id in dsvLeagueIds.keys) {
+            for ((kind, groups) in dsvLeagueIds[id]!!) { for (group in groups) {
+                val dsvInfo = LeagueDsvInfo(
+                    dsvLeagueSeason = 2023,
+                    dsvLeagueId = id,
+                    dsvLeagueGroup = group,
+                    dsvLeagueKind = kind
+                )
+
+                val name = leagueNames[id]
+                    ?: skrape(HttpFetcher) {
+                        request {
+                            url = websiteUrl + dsvInfo.buildLeagueLink()
+                        }
+                        extractIt {
+                            htmlDocument {
+                                findFirst("#ContentSection__headerLabel").text
+                            }
+                        }
+                    }
+                val region = leagueRegions[id] ?: "Unknown"
+                val country = "DEU"
+
+                leagues.set.add(League(
+                    name = name,
+                    country = country,
+                    region = region,
+                    dsvInfo = dsvInfo
+                ))
+            }}
         }
 
         return leagues.set.toList()

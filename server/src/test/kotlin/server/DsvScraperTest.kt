@@ -6,7 +6,7 @@ import commons.League
 import commons.LeagueDsvInfo
 import org.junit.jupiter.api.Test
 
-class ScraperTest {
+class DsvScraperTest {
 
     @Test
     fun scrape() {
@@ -16,7 +16,7 @@ class ScraperTest {
 
     @Test
     fun scrapeGames() {
-        val scraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
+        val scraper = DsvScraper("https://dsvdaten.dsv.de/Modules/WB/")
         scraper.scrapeGames(
             League(
             dsvInfo = LeagueDsvInfo(
@@ -31,7 +31,7 @@ class ScraperTest {
 
     @Test
     fun scrapeGameResult() {
-        val scraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
+        val scraper = DsvScraper("https://dsvdaten.dsv.de/Modules/WB/")
         scraper.scrapeGameResult(
             Game(
                 dsvInfo = GameDsvInfo(
@@ -53,7 +53,7 @@ class ScraperTest {
 
     @Test
     fun scrapeGameResult2() {
-        val scraper = Scraper("https://dsvdaten.dsv.de/Modules/WB/")
+        val scraper = DsvScraper("https://dsvdaten.dsv.de/Modules/WB/")
         scraper.scrapeGameResult(
             Game(
                 dsvInfo = GameDsvInfo(

@@ -4,6 +4,7 @@ import commons.Game
 import commons.GameDsvInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -34,6 +35,22 @@ class GameController(
         var saved: Game = repo.save(game)
         saved.league = assoc
         saved = repo.save(saved)
+        return ResponseEntity.ok(saved)
+    }
+
+    @Transactional
+    @PostMapping(path = ["/addAll/{leagueId}"])
+    fun addAllGames(@RequestBody games: List<Game>, @PathVariable leagueId: Long): ResponseEntity<List<Game>> {
+        if (games.isEmpty()) return ResponseEntity.ok(games)
+
+        val assoc = leagueRepo.getReferenceById(leagueId)
+
+        val existingGames = assoc.games
+        repo.deleteAll(existingGames)
+
+        var saved: List<Game> = games.map { it.league = assoc; it }
+        saved = repo.saveAll(saved)
+
         return ResponseEntity.ok(saved)
     }
 
