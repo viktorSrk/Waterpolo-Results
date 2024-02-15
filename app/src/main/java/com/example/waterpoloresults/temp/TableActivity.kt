@@ -1,4 +1,4 @@
-package com.example.waterpoloresults
+package com.example.waterpoloresults.temp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

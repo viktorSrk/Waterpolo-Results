@@ -1,26 +1,43 @@
 package com.example.waterpoloresults
 
-import android.content.Intent
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.waterpoloresults.MainActivity.Companion.leagues
 import com.example.waterpoloresults.ui.compose.components.CountryCard
+import com.example.waterpoloresults.ui.compose.game.GameScreen
+import com.example.waterpoloresults.ui.compose.league.GamesList
+import com.example.waterpoloresults.ui.compose.league.LeagueScreen
+import com.example.waterpoloresults.ui.compose.league.TablesList
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import com.example.waterpoloresults.utils.ServerUtils
 import commons.League
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -28,78 +45,46 @@ class MainActivity : ComponentActivity() {
     companion object {
         const val SERVER_URL = "192.168.2.165:8080"
         val sut = ServerUtils(SERVER_URL)
-    }
 
-    private val leagues = mutableStateOf(listOf<League>())
+        val leagues = mutableStateOf(listOf<League>())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        fetchLeagues()
+        lifecycleScope.launch(Dispatchers.IO) {
+            leagues.value = sut.getLeagues()
+        }
 
         setContent {
-            WaterpoloResultsTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    LazyColumn {
-                        item {
-                            UpdateButton(onClick = { fetchLeagues() })
-                        }
-                        item {
-                            CountryCard(
-                                countryName = "DEU",
-                                leagues = leagues.value,
-                                modifier = Modifier.fillMaxWidth(),
-                                preferredOrder = listOf("National", "Landesgruppen"),
-                                onLeagueClick = { league -> openGamesActivityForLeague(league) }
-                            )
-                        }
-                    }
-                }
-            }
+            MyApp()
         }
-    }
-
-    fun fetchLeagues() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val fetchedLeagues = sut.getLeagues()
-            leagues.value = fetchedLeagues
-        }
-    }
-
-    fun openGamesActivityForLeague(league: League) {
-        val intent = Intent(this@MainActivity, LeagueActivity::class.java).apply {
-            putExtra("leagueId", league.id)
-        }
-        startActivity(intent)
     }
 }
 
 @Composable
-fun UpdateButton(
-    onClick: () -> Unit
-) {
-    Button(onClick = onClick) {
-        Text(text = "Update")
-    }
-}
+fun MyApp() {
+    val leaguesState by remember { MainActivity.leagues }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun GreetingPreview() {
-    val dummyLeagues = listOf(
-        League(1, "League 1", "DEU", "Region 1"),
-        League(2, "League 2", "DEU", "Region 2"),
-        League(3, "League 3", "DEU", "Region 1"),
-        League(4, "League 4", "DEU", "Region 2")
-    )
     WaterpoloResultsTheme {
-        CountryCard(
-            countryName = "DEU",
-            leagues = dummyLeagues,
-            modifier = Modifier.fillMaxWidth(),
-            preferredOrder = listOf("National", "Landesgruppen")
-        )
+        val navController = rememberNavController()
+
+        Scaffold(
+            bottomBar = {}
+        ) { innerPadding ->
+            MyNavHost(
+                navController = navController,
+                leaguesState = leaguesState,
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
     }
+}
+
+@Preview(showBackground = true, widthDp = 380, heightDp = 720)
+@Preview(showBackground = true, widthDp = 380, heightDp = 720,
+    uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun MyAppPreview() {
+    MyApp()
 }

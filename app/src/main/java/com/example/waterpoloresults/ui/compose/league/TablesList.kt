@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.waterpoloresults.LeagueActivity
+import com.example.waterpoloresults.temp.LeagueActivity
 import com.example.waterpoloresults.ui.compose.components.TableCompact
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.Game

@@ -23,13 +23,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.waterpoloresults.LeagueActivity
+import com.example.waterpoloresults.temp.LeagueActivity
 import com.example.waterpoloresults.ui.compose.components.TableCompact
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.Game
 import commons.GameResult
+import commons.League
 import kotlinx.coroutines.launch
 import kotlin.math.min
+
+@Composable
+fun LeagueScreen(
+    league: League,
+    onGameClick: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    initialTabIndex: Int = 0
+) {
+    val tabTitles = listOf("Games", "Table")
+    val tableInfo = LeagueActivity.TableInfo.createTable(league.games)
+    val tabPages: List<@Composable () -> Unit> = listOf(
+        { GamesList(league.games, onGameClick = onGameClick) },
+        { TableCompact(positions = tableInfo.positions, mp = tableInfo.mp, pts = tableInfo.pts, dif = tableInfo.dif) }
+    )
+    LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex)
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

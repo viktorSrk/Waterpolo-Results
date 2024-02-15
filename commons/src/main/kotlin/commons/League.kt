@@ -22,7 +22,7 @@ data class League(
 
     @JsonManagedReference
     @OneToMany(mappedBy = "league", orphanRemoval = true)
-    val games: List<Game> = emptyList(),
+    var games: List<Game> = emptyList(),
 
     @JsonManagedReference
     @OneToOne(mappedBy = "league", orphanRemoval = true, cascade = [CascadeType.ALL])

@@ -41,10 +41,28 @@ class ServerUtils(
             .get()
             .build()
 
+        var league: League = League()
+
         client.newCall(request).execute().use {response ->
             val leagueJson = response.body?.string()
             val mapper = jacksonObjectMapper()
-            return mapper.readValue(leagueJson ?: "")
+            league = mapper.readValue(leagueJson ?: "")
+        }
+
+        league.games = getGamesByLeagueId(id)
+        return league
+    }
+
+    fun getGamesByLeagueId(id: Long): List<Game> {
+        val request = Request.Builder()
+            .url("$httpUrl/api/leagues/$id/games")
+            .get()
+            .build()
+
+        client.newCall(request).execute().use {response ->
+            val gamesJson = response.body?.string()
+            val mapper = jacksonObjectMapper()
+            return mapper.readValue(gamesJson ?: "")
         }
     }
 
