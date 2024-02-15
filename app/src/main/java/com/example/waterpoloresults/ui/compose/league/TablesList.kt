@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.waterpoloresults.ui.compose.components.TableCard
 import com.example.waterpoloresults.ui.compose.components.TableCompact
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import com.example.waterpoloresults.utils.TableInfo
@@ -27,7 +28,7 @@ fun TablesList(games: List<Game>) {
 
     LazyColumn {
         item {
-            TableCompact(
+            TableCard(
                 modifier = Modifier.padding(8.dp),
                 positions = positions, mp = mp, pts = pts, dif = dif
             )

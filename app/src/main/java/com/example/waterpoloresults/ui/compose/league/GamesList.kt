@@ -38,7 +38,7 @@ fun GamesList(games: List<Game>, modifier: Modifier = Modifier, onGameClick: (Lo
             items(games) { g ->
                 GameCard(
                     game = g,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
                     onClick = { onGameClick(g.id) }
                 )
             }
