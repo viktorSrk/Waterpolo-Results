@@ -1,9 +1,6 @@
-package com.example.waterpoloresults
+package com.example.waterpoloresults.ui.compose.game
 
 import android.content.res.Configuration
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,15 +12,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import com.example.waterpoloresults.ui.compose.GameResultHeader
-import com.example.waterpoloresults.ui.compose.GameResultOverview
-import com.example.waterpoloresults.ui.compose.GameResultSheet
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.Game
 import commons.GameResult
@@ -32,48 +24,10 @@ import commons.TeamSheet
 import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import commons.gameevents.TimeoutGameEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-
-class GameResultActivity : ComponentActivity() {
-
-    companion object {
-        val sut = MainActivity.sut
-    }
-
-    private val game = mutableStateOf(Game())
-    private val gameResult = mutableStateOf(GameResult())
-    private val gameEvents = mutableStateOf(emptyList<GameEvent>())
-    private val teamSheets = mutableStateOf(emptyList<TeamSheet>())
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val gameId = intent.getLongExtra("gameId", -1)
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val fetchedGame = sut.getGameById(gameId)
-            game.value = fetchedGame
-
-            val fetchedResult = sut.getGameResultByGameId(gameId)
-            gameResult.value = fetchedResult
-
-            val fetchedEvents = sut.getGameEventsByGameResultId(fetchedResult.id)
-            gameEvents.value = fetchedEvents
-
-            val fetchedTeamSheets = sut.getTeamSheetsByGameId(gameId)
-            teamSheets.value = fetchedTeamSheets
-        }
-
-        setContent {
-            GameResultComposition(game.value, gameResult.value, gameEvents.value, teamSheets.value)
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameResultComposition(game: Game, result: GameResult, gameEvents: List<GameEvent>, teamSheets: List<TeamSheet>) {
+fun GameScreen(game: Game, result: GameResult, gameEvents: List<GameEvent>, teamSheets: List<TeamSheet>) {
     WaterpoloResultsTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -92,7 +46,6 @@ fun GameResultComposition(game: Game, result: GameResult, gameEvents: List<GameE
                         teamSheets = teamSheets
                     )
                 } },
-                topBar = { GameResultHeader(game = game)},
                 scaffoldState = scaffoldState,
                 sheetPeekHeight = 150.dp,
                 sheetShadowElevation = 16.dp
@@ -113,7 +66,7 @@ fun GameResultComposition(game: Game, result: GameResult, gameEvents: List<GameE
     uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun GreetingPreview2() {
-    GameResultComposition(
+    GameScreen(
         game = Game(
             home = "Hamburger TB v. 1862",
             away = "SV Poseidon",

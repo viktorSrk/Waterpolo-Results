@@ -1,5 +1,6 @@
 package server.api
 
+import commons.Game
 import commons.League
 import commons.LeagueDsvInfo
 import org.springframework.beans.factory.annotation.Autowired

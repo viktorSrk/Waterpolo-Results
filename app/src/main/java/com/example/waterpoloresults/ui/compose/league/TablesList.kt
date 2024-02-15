@@ -1,59 +1,24 @@
-package com.example.waterpoloresults
+package com.example.waterpoloresults.ui.compose.league
 
 import android.content.res.Configuration
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import com.example.waterpoloresults.ui.compose.TableCompact
+import com.example.waterpoloresults.ui.compose.components.TableCompact
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
+import com.example.waterpoloresults.utils.TableInfo
 import commons.Game
 import commons.GameResult
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-
-class TableActivity : ComponentActivity() {
-
-    companion object {
-        val sut = MainActivity.sut
-    }
-
-    private val games = mutableStateOf(emptyList<Game>())
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val leagueId = intent.getLongExtra("leagueId", -1)
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val fetchedGames = sut.getLeagueById(leagueId).games
-            games.value = fetchedGames
-        }
-
-        setContent {
-            WaterpoloResultsTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    TablesComposition(games.value)
-                }
-            }
-        }
-    }
-}
 
 @Composable
-fun TablesComposition(games: List<Game>) {
+fun TablesList(games: List<Game>) {
 
-    val tableInfo = LeagueActivity.TableInfo.createTable(games)
+    val tableInfo = TableInfo.createTable(games)
 
     val positions = tableInfo.positions
     val mp = tableInfo.mp
@@ -94,7 +59,7 @@ fun TableCompositionPreview() {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            TablesComposition(dummyGames)
+            TablesList(dummyGames)
         }
     }
 }

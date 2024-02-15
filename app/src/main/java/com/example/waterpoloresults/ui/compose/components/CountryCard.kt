@@ -1,19 +1,10 @@
-package com.example.waterpoloresults.ui.compose
+package com.example.waterpoloresults.ui.compose.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -54,62 +45,17 @@ fun CountryCard(
             if (expanded) {
                 Column(modifier = Modifier.padding(6.dp)) {
                     leaguesByRegion.forEach { (region, l) ->
-                        RegionCard(region, l, modifier = Modifier.padding(2.dp), onLeagueClick = onLeagueClick)
+                        RegionCard(
+                            region,
+                            l,
+                            modifier = Modifier.padding(2.dp),
+                            onLeagueClick = onLeagueClick
+                        )
                     }
                 }
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RegionCard(
-    regionName: String,
-    leagues: Collection<League>,
-    modifier: Modifier = Modifier,
-    onLeagueClick: (League) -> Unit = {}) {
-
-    var expanded by remember { mutableStateOf(false) }
-
-    ElevatedCard(onClick = { expanded = !expanded }, modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = regionName,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        if (expanded) {
-            leagues.forEach { l ->
-                LeagueEntry(l, onClick = onLeagueClick)
-            }
-        }
-    }
-}
-
-@Composable
-fun LeagueEntry(
-    league: League,
-    modifier: Modifier = Modifier,
-    onClick: (League) -> Unit = {},
-    onFavoriteClick: () -> Unit = {}) {
-
-    Divider()
-    ListItem(modifier = modifier
-        .fillMaxWidth()
-        .clickable { onClick(league) },
-        headlineContent = { Text(text = league.name) },
-        trailingContent = {
-            IconButton(
-                content = {
-                    Icon(
-                        imageVector = Icons.Filled.FavoriteBorder,
-                        contentDescription = "")
-                },
-                onClick = onFavoriteClick
-            )
-        }
-    )
 }
 
 @Preview(showBackground = true, widthDp = 320)
