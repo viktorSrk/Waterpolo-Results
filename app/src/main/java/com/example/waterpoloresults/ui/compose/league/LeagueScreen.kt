@@ -45,7 +45,7 @@ fun LeagueScreen(
         { GamesList(league.games, onGameClick = onGameClick) },
         { TableCompact(positions = tableInfo.positions, mp = tableInfo.mp, pts = tableInfo.pts, dif = tableInfo.dif) }
     )
-    LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex)
+    LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex, modifier = modifier)
 }
 
 @OptIn(ExperimentalFoundationApi::class)

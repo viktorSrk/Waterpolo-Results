@@ -1,11 +1,7 @@
 package com.example.waterpoloresults
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import commons.League
 
 interface Destinations {
     val name: String
