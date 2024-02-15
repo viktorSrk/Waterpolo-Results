@@ -26,12 +26,13 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameCard(game: Game, modifier: Modifier = Modifier, onClick: (Long) -> Unit = {}) {
-    Surface(modifier = modifier.padding(8.dp)) {
-        Card(onClick = { onClick(game.id) }) {
-            Row(modifier = Modifier.padding(8.dp)) {
-                ResultDateCard(game = game, modifier = Modifier.align(Alignment.CenterVertically))
-                ResultTexts(home = game.home, away = game.away)
-            }
+    Card(
+        onClick = { onClick(game.id) },
+        modifier = modifier
+    ) {
+        Row(modifier = Modifier.padding(8.dp)) {
+            ResultDateCard(game = game, modifier = Modifier.align(Alignment.CenterVertically))
+            ResultTexts(home = game.home, away = game.away)
         }
     }
 }

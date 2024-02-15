@@ -34,7 +34,7 @@ fun TableCompact(
     val teamsListSorted = positions.toList().sortedBy{ it.second }.map{ it.first }
 
     Column(modifier = modifier) {
-    TableHeader(modifier = Modifier.padding(8.dp).padding(horizontal = 8.dp))
+        TableHeader(modifier = Modifier.padding(8.dp))
         Column(
             verticalArrangement = Arrangement.Top
         ) {
@@ -61,7 +61,7 @@ fun TableTeamRow(
     dif: Int,
     modifier: Modifier = Modifier
 ) {
-    val teamStyle = MaterialTheme.typography.bodyMedium
+    val teamStyle = MaterialTheme.typography.bodyLarge
     val statsMod = Modifier
 
     Row(
@@ -77,7 +77,7 @@ fun TableTeamRow(
         }
         Box {
             Row(
-                modifier = Modifier.width(100.dp)
+                modifier = Modifier.width(120.dp)
             ) {
                 Text(text = mp.toString(), modifier = statsMod.weight(1f), style = teamStyle, textAlign = TextAlign.Center)
                 Text(text = pts.toString(), modifier = statsMod.weight(1f), style = teamStyle, textAlign = TextAlign.Center)
@@ -90,7 +90,7 @@ fun TableTeamRow(
 @Composable
 fun TableHeader(modifier: Modifier = Modifier) {
     val titleMod = Modifier
-    val titleStyle = MaterialTheme.typography.labelSmall
+    val titleStyle = MaterialTheme.typography.labelMedium
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -99,7 +99,7 @@ fun TableHeader(modifier: Modifier = Modifier) {
     ) {
         Text(text = "Team", style = titleStyle)
         Box { Row(
-            modifier = Modifier.width(100.dp)
+            modifier = Modifier.width(120.dp)
         ) {
             Text(text = "MP", modifier = titleMod.weight(1f), style = titleStyle, textAlign = TextAlign.Center)
             Text(text = "Pts", modifier = titleMod.weight(1f), style = titleStyle, textAlign = TextAlign.Center)
@@ -143,7 +143,7 @@ fun TableCompositionPreview() {
                     "Team C" to 2,
                     "Team D" to -3,
                     "Team B" to 5,
-                    "Team A" to 10,
+                    "Team A" to 100,
                     "Team E" to -14
                 )
             )

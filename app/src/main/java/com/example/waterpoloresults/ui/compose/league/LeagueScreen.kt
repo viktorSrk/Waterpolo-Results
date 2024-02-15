@@ -43,7 +43,7 @@ fun LeagueScreen(
     val tableInfo = TableInfo.createTable(league.games)
     val tabPages: List<@Composable () -> Unit> = listOf(
         { GamesList(league.games, onGameClick = onGameClick) },
-        { TableCompact(positions = tableInfo.positions, mp = tableInfo.mp, pts = tableInfo.pts, dif = tableInfo.dif) }
+        { TablesList(games = league.games) }
     )
     LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex, modifier = modifier)
 }
