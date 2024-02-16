@@ -34,16 +34,18 @@ import kotlin.math.min
 
 @Composable
 fun LeagueScreen(
-    league: League,
+    leagues: List<League>,
     onGameClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     initialTabIndex: Int = 0
 ) {
     val tabTitles = listOf("Games", "Table")
-    val tableInfo = TableInfo.createTable(league.games)
+
+    val allGames = leagues.flatMap { it.games }
+
     val tabPages: List<@Composable () -> Unit> = listOf(
-        { GamesList(league.games, onGameClick = onGameClick) },
-        { TablesList(games = league.games) }
+        { GamesList(allGames, onGameClick = onGameClick) },
+        { TablesList(leagues = leagues) }
     )
     LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex, modifier = modifier)
 }

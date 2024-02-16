@@ -15,16 +15,17 @@ import commons.League
 
 @Composable
 fun LeagueEntry(
-    league: League,
+    name: String,
+    groupedLeague: List<League>,
     modifier: Modifier = Modifier,
-    onClick: (League) -> Unit = {},
+    onClick: (List<League>) -> Unit = {},
     onFavoriteClick: () -> Unit = {}) {
 
     Divider()
     ListItem(modifier = modifier
         .fillMaxWidth()
-        .clickable { onClick(league) },
-        headlineContent = { Text(text = league.name) },
+        .clickable { onClick(groupedLeague) },
+        headlineContent = { Text(text = name) },
         trailingContent = {
             IconButton(
                 content = {

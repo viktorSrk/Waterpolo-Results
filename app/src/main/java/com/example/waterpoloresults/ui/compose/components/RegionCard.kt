@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.waterpoloresults.utils.groupDsvLeagues
 import commons.League
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,9 +22,12 @@ fun RegionCard(
     regionName: String,
     leagues: Collection<League>,
     modifier: Modifier = Modifier,
-    onLeagueClick: (League) -> Unit = {}) {
+    onLeagueClick: (List<League>) -> Unit = {}
+) {
 
     var expanded by remember { mutableStateOf(false) }
+
+    val groupedLeagues = groupDsvLeagues(leagues)
 
     ElevatedCard(onClick = { expanded = !expanded }, modifier = modifier.fillMaxWidth()) {
         Text(
@@ -33,8 +37,8 @@ fun RegionCard(
         )
 
         if (expanded) {
-            leagues.forEach { l ->
-                LeagueEntry(l, onClick = onLeagueClick)
+            groupedLeagues.keys.forEach { l ->
+                LeagueEntry(l, groupedLeagues.get(l)!!, onClick = onLeagueClick)
             }
         }
     }

@@ -17,10 +17,10 @@ object LeagueDestination : Destinations {
     override val name = "League"
     override val route = "league"
 
-    const val leagueIdArg = "league_id"
-    val routeWithArg = "${route}/{${leagueIdArg}}"
+    const val leagueIdsStringArg = "league_id"
+    val routeWithArg = "${route}/{${leagueIdsStringArg}}"
     val arguments = listOf(
-        navArgument(leagueIdArg) { type = NavType.LongType }
+        navArgument(leagueIdsStringArg) { type = NavType.StringType }
     )
 }
 
@@ -28,11 +28,11 @@ object GameDestination : Destinations {
     override val name = "Game"
     override val route = "game"
 
-    const val leagueIdArg = "league_id"
+    const val leagueIdsStringArg = "league_id"
     const val gameIdArg = "game_id"
-    val routeWithArg = "${LeagueDestination.route}/{${leagueIdArg}}/${route}/{${gameIdArg}}"
+    val routeWithArg = "${LeagueDestination.route}/{${leagueIdsStringArg}}/${route}/{${gameIdArg}}"
     val arguments = listOf(
-        navArgument(leagueIdArg) { type = NavType.LongType },
+        navArgument(leagueIdsStringArg) { type = NavType.StringType },
         navArgument(gameIdArg) { type = NavType.LongType }
     )
 }
