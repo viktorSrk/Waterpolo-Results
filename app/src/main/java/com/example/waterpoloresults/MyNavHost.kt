@@ -57,7 +57,7 @@ fun MyNavHost(
                 leagues = leagues,
                 onGameClick = { gameId ->
                     navController.navigateSingleTopTo(
-                        "${LeagueDestination.route}/${leagueIdsString}/${GameDestination.route}/${gameId}" //TODO: fix route
+                        "${LeagueDestination.route}/${leagueIdsString}/${GameDestination.route}/${gameId}"
                     )
                 }
             )
