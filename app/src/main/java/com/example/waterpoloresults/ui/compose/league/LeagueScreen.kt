@@ -12,11 +12,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -41,10 +48,10 @@ fun LeagueScreen(
 ) {
     val tabTitles = listOf("Games", "Table")
 
-    val allGames = leagues.flatMap { it.games }
-
     val tabPages: List<@Composable () -> Unit> = listOf(
-        { GamesList(allGames, onGameClick = onGameClick) },
+        {
+            LeagueGamesList(leagues, onGameClick = onGameClick)
+        },
         { TablesList(leagues = leagues) }
     )
     LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex, modifier = modifier)
@@ -140,16 +147,22 @@ fun LeaguePagesPreview() {
         )
     )
 
+    val dummyLeagues = listOf(
+        League(
+            games = dummyGames
+        ),
+        League(
+            games = dummyGames
+        )
+    )
+
     val tableInfo = TableInfo.createTable(dummyGames)
 
     WaterpoloResultsTheme {
         Surface {
             LeagueScreen(
-                tabTitles = listOf("Games", "Table"),
-                tabPages = listOf(
-                    { GamesList(dummyGames) },
-                    { TableCompact(positions = tableInfo.positions, mp = tableInfo.mp, pts = tableInfo.pts, dif = tableInfo.dif) }
-                )
+                leagues = dummyLeagues,
+                onGameClick = {}
             )
         }
     }
