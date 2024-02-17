@@ -31,7 +31,7 @@ fun MyNavHost(
                         countryName = "DEU",
                         leagues = leaguesState,
                         modifier = Modifier.fillMaxWidth(),
-                        preferredOrder = listOf("National", "Landesgruppen"),
+                        preferredOrder = listOf("National", "Nord", "Ost", "West", "Süd", "Landesgruppen"),
                         onLeagueClick = { groupedLeagues ->
                             val arr = groupedLeagues.map { it.id }
                             val arrString = arr.joinToString(",")
