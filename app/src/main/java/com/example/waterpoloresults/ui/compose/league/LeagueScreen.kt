@@ -24,10 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
-import com.example.waterpoloresults.utils.TableInfo
 import commons.Game
 import commons.GameResult
 import commons.League
+import commons.LeagueDsvInfo
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
@@ -141,10 +141,12 @@ fun LeaguePagesPreview() {
 
     val dummyLeagues = listOf(
         League(
-            games = dummyGames
+            games = dummyGames,
+            dsvInfo = LeagueDsvInfo(dsvLeagueGroup = "A", dsvLeagueKind = "V")
         ),
         League(
-            games = dummyGames
+            games = dummyGames,
+            dsvInfo = LeagueDsvInfo(dsvLeagueGroup = "B", dsvLeagueKind = "V")
         )
     )
 

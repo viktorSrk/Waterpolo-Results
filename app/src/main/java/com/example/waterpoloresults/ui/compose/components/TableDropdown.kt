@@ -1,6 +1,5 @@
-package com.example.waterpoloresults.ui.compose.league
+package com.example.waterpoloresults.ui.compose.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +12,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -21,18 +19,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import com.example.waterpoloresults.utils.determineLeagueKind
 import commons.League
-import commons.LeagueDsvInfo
 
 @Composable
-fun GamesDropdown(
-    gamesIndexState: MutableState<Int>,
-    groups: List<League>,
+fun TableDropdown(
+    tablesIndexState: MutableState<String>,
+    tables: Map<String, List<League>>,
     buttonString: String,
     modifier: Modifier = Modifier
 ) {
@@ -44,56 +40,26 @@ fun GamesDropdown(
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier.fillMaxWidth()) {
             DropdownMenuItem(
-                text = { Text("All Games") },
+                text = { Text("All Tables", modifier = Modifier.weight(1f)) },
                 onClick = {
-                    gamesIndexState.value = -1
+                    tablesIndexState.value = "All"
                     expanded = false
                 }
             )
-            groups.forEachIndexed { index, group ->
+            tables.forEach { (kind, leagues) ->
                 DropdownMenuItem(
                     text = {
-                        Row {
-                            Text(
-                                "Group " + (group.dsvInfo?.dsvLeagueGroup ?: "?"),
-                                modifier = Modifier.weight(1f)
-                            )
-                            Text(determineLeagueKind(group), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
+                        Text(
+                            text = kind,
+                            modifier = Modifier.weight(1f)
+                        )
                     },
                     onClick = {
-                        gamesIndexState.value = index
+                        tablesIndexState.value = kind
                         expanded = false
                     }
                 )
             }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun GamesDropdownPreview() {
-    val gamesIndex = remember { mutableStateOf(0) }
-    val groups = listOf(
-        League(dsvInfo = LeagueDsvInfo(
-            dsvLeagueGroup = "A",
-            dsvLeagueKind = "P"
-        )),
-        League(dsvInfo = LeagueDsvInfo(
-            dsvLeagueGroup = "B",
-            dsvLeagueKind = "V"
-        )),
-        League(dsvInfo = LeagueDsvInfo(
-            dsvLeagueGroup = "C",
-            dsvLeagueKind = "Z"
-        ))
-    )
-
-    WaterpoloResultsTheme {
-        Surface {
-            GamesDropdown(gamesIndexState = gamesIndex, groups = groups, buttonString = "All Games")
         }
     }
 }
