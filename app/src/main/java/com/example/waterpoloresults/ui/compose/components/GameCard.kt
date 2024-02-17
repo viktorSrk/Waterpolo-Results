@@ -40,7 +40,7 @@ fun GameCard(game: Game, modifier: Modifier = Modifier, onClick: (Long) -> Unit 
 @Composable
 fun ResultDateCard(game: Game, modifier: Modifier = Modifier) {
     ElevatedCard(modifier = modifier.wrapContentWidth()) {
-        if (game.result!!.finished) {
+        if (game.result?.finished ?: false) {
             ResultTexts(
                 home = game.result!!.homeScore.sum().toString(),
                 away = game.result!!.awayScore.sum().toString(),
