@@ -19,10 +19,10 @@ data class LeagueDsvInfo(
     @JoinColumn(name = "league_id", referencedColumnName = "id")
     var league: League? = null,
 
-    val dsvLeagueSeason: Int = -1,
-    val dsvLeagueId: Int = -1,
-    val dsvLeagueGroup: String = "",
-    val dsvLeagueKind: String = ""
+    var dsvLeagueSeason: Int = 2023,
+    var dsvLeagueId: Int = -1,
+    var dsvLeagueGroup: String = "",
+    var dsvLeagueKind: String = ""
 ) {
 
     fun buildLeagueLink(): String {

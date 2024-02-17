@@ -31,10 +31,13 @@ fun MyNavHost(
                         countryName = "DEU",
                         leagues = leaguesState,
                         modifier = Modifier.fillMaxWidth(),
-                        preferredOrder = listOf("National", "Landesgruppen"),
-                        onLeagueClick = { league ->
+                        preferredOrder = listOf("National", "Nord", "Ost", "West", "Süd", "Landesgruppen"),
+                        onLeagueClick = { groupedLeagues ->
+                            val arr = groupedLeagues.map { it.id }
+                            val arrString = arr.joinToString(",")
+
                             navController.navigateSingleTopTo(
-                                "${LeagueDestination.route}/${league.id}"
+                                "${LeagueDestination.route}/${arrString}"
                             )
                         }
                     )
@@ -45,23 +48,29 @@ fun MyNavHost(
             route = LeagueDestination.routeWithArg,
             arguments = LeagueDestination.arguments
         ) {
-            val leagueId = it.arguments?.getLong(LeagueDestination.leagueIdArg)
-            val league = leaguesState.find { it.id == leagueId } ?: return@composable
+            val leagueIdsString = it.arguments?.getString(LeagueDestination.leagueIdsStringArg)
+            val leagueIds = leagueIdsString?.split(",")?.map { it.toLong() } ?: return@composable
 
-            LeagueScreen(league = league, onGameClick = { gameId ->
-                navController.navigateSingleTopTo(
-                    "${LeagueDestination.route}/$leagueId/${GameDestination.route}/${gameId}"
-                )
-            })
+            val leagues: List<League> = leaguesState.filter { it.id in leagueIds}
+
+            LeagueScreen(
+                leagues = leagues,
+                onGameClick = { gameId ->
+                    navController.navigateSingleTopTo(
+                        "${LeagueDestination.route}/${leagueIdsString}/${GameDestination.route}/${gameId}"
+                    )
+                }
+            )
         }
         composable(
             route = GameDestination.routeWithArg,
             arguments = GameDestination.arguments
         ) {
-            val leagueId = it.arguments?.getLong(LeagueDestination.leagueIdArg)
+            val leagueIdsString = it.arguments?.getString(LeagueDestination.leagueIdsStringArg)
+            val leagueIds = leagueIdsString?.split(",")?.map { it.toLong() } ?: return@composable
             val gameId = it.arguments?.getLong(GameDestination.gameIdArg)
 
-            val game = leaguesState.find { it.id == leagueId }?.games?.find { it.id == gameId }
+            val game = leaguesState.filter { it.id in leagueIds }.flatMap{ it.games }.find { it.id == gameId }
                 ?: return@composable
 
             GameScreen(

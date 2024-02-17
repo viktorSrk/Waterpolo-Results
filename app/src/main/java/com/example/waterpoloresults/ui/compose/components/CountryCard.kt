@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.League
+import commons.LeagueDsvInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +27,7 @@ fun CountryCard(
     leagues: Collection<League>,
     modifier: Modifier = Modifier,
     preferredOrder: List<String> = emptyList(),
-    onLeagueClick: (League) -> Unit = {}) {
+    onLeagueClick: (List<League>) -> Unit = {}) {
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -67,12 +68,20 @@ fun Preview1(
         League(
             name = "Bundesliga",
             country = "DEU",
-            region = "National"
+            region = "National",
+            dsvInfo = LeagueDsvInfo(dsvLeagueId = 1)
+        ),
+        League(
+            name = "Bundesligaaaaa",
+            country = "DEU",
+            region = "National",
+            dsvInfo = LeagueDsvInfo(dsvLeagueId = 1)
         ),
         League(
             name = "Bundesliga Frauen",
             country = "DEU",
-            region = "National"
+            region = "National",
+            dsvInfo = LeagueDsvInfo(dsvLeagueId = 2)
         ),
         League(
             name = "2. Liga Nord",

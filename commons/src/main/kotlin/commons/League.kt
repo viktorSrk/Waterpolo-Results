@@ -15,10 +15,10 @@ data class League(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    val name: String = "",
+    var name: String = "",
 
-    val country: String = "",
-    val region: String = "",
+    var country: String = "",
+    var region: String = "",
 
     @JsonManagedReference
     @OneToMany(mappedBy = "league", orphanRemoval = true)

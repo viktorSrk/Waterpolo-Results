@@ -23,27 +23,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.waterpoloresults.ui.compose.components.TableCompact
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
-import com.example.waterpoloresults.utils.TableInfo
 import commons.Game
 import commons.GameResult
 import commons.League
+import commons.LeagueDsvInfo
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
 @Composable
 fun LeagueScreen(
-    league: League,
+    leagues: List<League>,
     onGameClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     initialTabIndex: Int = 0
 ) {
     val tabTitles = listOf("Games", "Table")
-    val tableInfo = TableInfo.createTable(league.games)
+
     val tabPages: List<@Composable () -> Unit> = listOf(
-        { GamesList(league.games, onGameClick = onGameClick) },
-        { TablesList(games = league.games) }
+        {
+            LeagueGamesList(leagues, onGameClick = onGameClick)
+        },
+        { TablesList(leagues = leagues) }
     )
     LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex, modifier = modifier)
 }
@@ -138,16 +139,22 @@ fun LeaguePagesPreview() {
         )
     )
 
-    val tableInfo = TableInfo.createTable(dummyGames)
+    val dummyLeagues = listOf(
+        League(
+            games = dummyGames,
+            dsvInfo = LeagueDsvInfo(dsvLeagueGroup = "A", dsvLeagueKind = "V")
+        ),
+        League(
+            games = dummyGames,
+            dsvInfo = LeagueDsvInfo(dsvLeagueGroup = "B", dsvLeagueKind = "V")
+        )
+    )
 
     WaterpoloResultsTheme {
         Surface {
             LeagueScreen(
-                tabTitles = listOf("Games", "Table"),
-                tabPages = listOf(
-                    { GamesList(dummyGames) },
-                    { TableCompact(positions = tableInfo.positions, mp = tableInfo.mp, pts = tableInfo.pts, dif = tableInfo.dif) }
-                )
+                leagues = dummyLeagues,
+                onGameClick = {}
             )
         }
     }

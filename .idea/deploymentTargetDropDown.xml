@@ -8,14 +8,30 @@
       <entry key="GameResultSheetPreview">
         <State />
       </entry>
-      <entry key="GreetingPreview2">
+      <entry key="GamesPreview">
         <State />
       </entry>
       <entry key="LeaguePagesPreview">
         <State />
       </entry>
-      <entry key="app">
+      <entry key="LeaguePagesPreview (1)">
         <State />
+      </entry>
+      <entry key="app">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_3a_API_33_arm64-v8a.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-02-17T18:14:19.718601Z" />
+        </State>
       </entry>
     </value>
   </component>
