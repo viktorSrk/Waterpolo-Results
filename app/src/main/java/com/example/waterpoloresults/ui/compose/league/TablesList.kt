@@ -1,6 +1,7 @@
 package com.example.waterpoloresults.ui.compose.league
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,6 +20,7 @@ import com.example.waterpoloresults.ui.compose.components.TableCard
 import com.example.waterpoloresults.ui.compose.components.TableDropdown
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import com.example.waterpoloresults.utils.TableInfo
+import com.example.waterpoloresults.utils.determineLeagueKind
 import com.example.waterpoloresults.utils.groupDsvLeaguesByKind
 import commons.Game
 import commons.GameResult
@@ -52,10 +55,20 @@ fun TablesList(
             val pts = tableInfo.pts
             val dif = tableInfo.dif
 
-            Text(
-                text = "Group ${l.dsvInfo?.dsvLeagueGroup ?: "?"}",
-                style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(8.dp)
-            )
+            Row(
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(
+                    text = "Group ${l.dsvInfo?.dsvLeagueGroup ?: "?"}",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(8.dp).weight(1f)
+                )
+                Text(
+                    text = determineLeagueKind(l),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
             TableCard(
                 positions = positions,
                 mp = mp,
