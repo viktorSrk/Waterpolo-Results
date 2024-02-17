@@ -44,25 +44,9 @@ fun main(args: Array<String>) {
 			gameEventController,
 			teamSheetController,
 
-			mapOf(
-				30 to mapOf(
-					"L" to listOf("")
-				),
-				301 to mapOf(
-					"V" to listOf("A", "B", "C"),
-					"Z" to listOf("D", "E", "F")
-				)
-			),
-
-			mapOf(
-				30 to "2. Liga Nord",
-				301 to "U18 Bundesliga"
-			),
-
-			mapOf(
-				30 to "Nord",
-				301 to "National"
-			)
+			LeaguesToScrape.dsvLeagueIds,
+			LeaguesToScrape.leagueNames,
+			LeaguesToScrape.leagueRegions
 		)
 	}
 }
