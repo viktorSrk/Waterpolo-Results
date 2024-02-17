@@ -35,7 +35,7 @@ fun LeagueGamesList(groups: List<League>, modifier: Modifier = Modifier, onGameC
 
     val allGames = groups.flatMap { it.games }
 
-    var gamesIndexState = remember { mutableStateOf(-1) }
+    val gamesIndexState = remember { mutableStateOf(-1) }
     val gamesIndex = gamesIndexState.value
     val games =
         if (gamesIndex == -1) allGames
