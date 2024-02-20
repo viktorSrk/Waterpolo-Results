@@ -38,7 +38,7 @@ fun LeagueScreen(
     modifier: Modifier = Modifier,
     initialTabIndex: Int = 0
 ) {
-    val tabTitles = listOf("Games", "Table")
+    val tabTitles = listOf("Games", "Standings")
 
     val tabPages: List<@Composable () -> Unit> = listOf(
         {
