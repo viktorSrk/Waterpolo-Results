@@ -32,7 +32,8 @@ import commons.LeagueDsvInfo
 
 @Composable
 fun TablesList(
-    leagues: List<League>
+    leagues: List<League>,
+    onGameClick: (Long) -> Unit = {}
 ) {
     val leaguesGroupedByKind = groupDsvLeaguesByKind(leagues)
 
@@ -72,6 +73,7 @@ fun TablesList(
             if (leagueKind == LeagueKinds.CUP) {
                 CupTree(
                     tree = determineCupTree(l),
+                    onGameClick = onGameClick,
                     modifier = Modifier
                 )
             } else {

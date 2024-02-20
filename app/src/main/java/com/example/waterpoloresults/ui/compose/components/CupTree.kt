@@ -17,6 +17,7 @@ import commons.Game
 @Composable
 fun CupTree(
     tree: Map<Int, List<Game>>,
+    onGameClick: (Long) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val roundIndexState = remember { mutableStateOf(tree.keys.size) }
@@ -26,7 +27,11 @@ fun CupTree(
     Column(modifier = modifier) {
         CupDropdown(roundsIndexState = roundIndexState, tree = tree, buttonString = buttonString)
         tree[roundIndex]?.forEach { game ->
-            GameCard(game = game, modifier = Modifier.padding(8.dp).fillMaxWidth())
+            GameCard(
+                game = game,
+                onClick = onGameClick,
+                modifier = Modifier.padding(8.dp).fillMaxWidth()
+            )
         }
     }
 }

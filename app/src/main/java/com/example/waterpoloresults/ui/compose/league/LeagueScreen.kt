@@ -44,7 +44,7 @@ fun LeagueScreen(
         {
             LeagueGamesList(leagues, onGameClick = onGameClick)
         },
-        { TablesList(leagues = leagues) }
+        { TablesList(leagues = leagues, onGameClick = onGameClick) }
     )
     LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex, modifier = modifier)
 }
