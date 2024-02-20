@@ -19,7 +19,7 @@ data class Game(
 
     val home: String = "",
     val away: String = "",
-    val date: Long = 0,
+    val date: Long = Long.MAX_VALUE,
 
     @JsonBackReference
     @ManyToOne(cascade = [CascadeType.ALL])

@@ -156,7 +156,7 @@ class DsvScraper(val websiteUrl: String) {
                         var dateHolderText = row.children[1].text
                         try {
                             if (dateHolderText.startsWith("unbekannt")) {
-                                date = -1
+                                date = Long.MAX_VALUE
                             } else if (dateHolderText.endsWith("unbekannt")) {
                                 dateHolderText = dateHolderText.dropLast("unbekannt".length)
                                 date = SimpleDateFormat("dd.MM.yy, ", Locale.getDefault()).parse(
@@ -170,7 +170,7 @@ class DsvScraper(val websiteUrl: String) {
                                     ).time
                             }
                         } catch (e: ParseException) {
-                            date = -1
+                            date = Long.MAX_VALUE
                         }
 
                         val dsvLink = row.findFirst("a").attribute("href").drop(websiteUrl.length)
