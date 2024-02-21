@@ -1,18 +1,26 @@
 package com.example.waterpoloresults.ui.compose.league
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.waterpoloresults.ui.compose.components.GPGScorerRow
 import com.example.waterpoloresults.ui.compose.components.PlayerRow
 import com.example.waterpoloresults.ui.compose.components.TopScorerHeader
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
@@ -28,6 +36,7 @@ fun TopScorerList(
     modifier: Modifier = Modifier
 ) {
     val games by remember { mutableStateOf(leagues.flatMap { it.games }) }
+    var gpg by remember { mutableStateOf(false) }
 
     val matchesPlayed = games.flatMap { it.result?.teamSheets ?: emptyList() }
         .flatMap { it.players }.map { it.name }
@@ -36,25 +45,74 @@ fun TopScorerList(
     val goalScorerList = getGoalScorerList(games)
         .toList().sortedBy{ matchesPlayed[it.first] }.sortedByDescending { it.second }.toMap()
 
-    Card(modifier = modifier.padding(8.dp)) {
-        LazyColumn(modifier = Modifier.padding(8.dp)) {
-            item {
-                TopScorerHeader(modifier = Modifier.padding(vertical = 8.dp).padding(bottom = 8.dp))
+    val gpgScorerList: Map<String, Float> = goalScorerList.mapValues { it.value.toFloat() / (matchesPlayed[it.key] ?: 1) }
+        .toList().sortedByDescending { it.second }.toMap()
+
+    LazyColumn(modifier = modifier) {
+        item {
+            Row(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Goals Per Game",
+                    style = MaterialTheme.typography.titleSmall,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.weight(1f).padding(8.dp)
+                )
+                Switch(checked = gpg, onCheckedChange = { gpg = it })
             }
+        }
+        item{
+            Card(modifier = Modifier.padding(8.dp)) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    TopScorerHeader(
+                        gpg = gpg,
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .padding(bottom = 8.dp)
+                    )
 
-            var previousGoals = -1
-            var position = 1
-            items(goalScorerList.keys.toList()) {scorer ->
-                val goals = goalScorerList[scorer] ?: 0
-                val matches = matchesPlayed[scorer] ?: 0
-                if (goals != previousGoals) {
-                    val index = goalScorerList.values.indexOf(goals)
+                    var previousGoals: Float = -1f
+                    var position = 1
+                    if (gpg) {
+                        gpgScorerList.keys.forEach { scorer ->
+                            val goals = gpgScorerList[scorer] ?: 0f
+                            if (goals != previousGoals) {
+                                val index = gpgScorerList.values.indexOf(goals)
 
-                    position = index + 1
-                    previousGoals = goals
+                                position = index + 1
+                                previousGoals = goals
+                            }
+
+                            GPGScorerRow(
+                                number = position,
+                                name = scorer,
+                                goals = goals,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
+                    } else {
+                        goalScorerList.keys.forEach { scorer ->
+                            val goals = goalScorerList[scorer] ?: 0
+                            val matches = matchesPlayed[scorer] ?: 0
+                            if (goals.toFloat() != previousGoals) {
+                                val index = goalScorerList.values.indexOf(goals)
+
+                                position = index + 1
+                                previousGoals = goals.toFloat()
+                            }
+
+                            PlayerRow(
+                                position,
+                                scorer,
+                                goals,
+                                matches,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
+                    }
                 }
-
-                PlayerRow(position, scorer, goals, matches, modifier = Modifier.padding(vertical = 8.dp))
             }
         }
     }
@@ -99,6 +157,7 @@ fun TopScorerListPreview() {
                             gameEvents = listOf(
                                 GoalGameEvent(scorerName = "Player 1", scorerNumber = 1),
                                 GoalGameEvent(scorerName = "Player 2", scorerNumber = 2),
+                                GoalGameEvent(scorerName = "Player 1", scorerNumber = 1),
                                 GoalGameEvent(scorerName = "Player 1", scorerNumber = 1),
                                 GoalGameEvent(scorerName = "Player 2", scorerNumber = 2),
                                 GoalGameEvent(scorerName = "Player 2", scorerNumber = 2),
