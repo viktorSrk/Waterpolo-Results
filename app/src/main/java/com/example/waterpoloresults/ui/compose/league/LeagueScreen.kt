@@ -28,6 +28,7 @@ import commons.Game
 import commons.GameResult
 import commons.League
 import commons.LeagueDsvInfo
+import commons.gameevents.GoalGameEvent
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
@@ -38,14 +39,20 @@ fun LeagueScreen(
     modifier: Modifier = Modifier,
     initialTabIndex: Int = 0
 ) {
-    val tabTitles = listOf("Games", "Standings")
+    val tabTitles = listOf("Games", "Standings", "Top-Scorers")
 
     val tabPages: List<@Composable () -> Unit> = listOf(
         {
-            LeagueGamesList(leagues, onGameClick = onGameClick)
+            LeagueGamesList(groups = leagues, onGameClick = onGameClick)
         },
-        { TablesList(leagues = leagues, onGameClick = onGameClick) }
+        {
+            TablesList(leagues = leagues, onGameClick = onGameClick)
+        },
+        {
+            TopScorerList(leagues = leagues)
+        }
     )
+
     LeagueScreen(tabTitles = tabTitles, tabPages = tabPages, initialTabIndex = initialTabIndex, modifier = modifier)
 }
 
@@ -129,7 +136,16 @@ fun LeaguePagesPreview() {
             home = "Hamburger Turnerbund v. 1862",
             away = "SV Poseidon Hamburg",
             date = 1700002003000,
-            result = GameResult(homeScore = arrayOf(2, 3, 1, 5), awayScore = arrayOf(0, 1, 2, 2), finished = true)
+            result = GameResult(
+                homeScore = arrayOf(2, 3, 1, 5),
+                awayScore = arrayOf(0, 1, 2, 2),
+                finished = true,
+                gameEvents = listOf(
+                    GoalGameEvent(scorerName = "Player 1"),
+                    GoalGameEvent(scorerName = "Player 2"),
+                    GoalGameEvent(scorerName = "Player 1")
+                )
+            )
         ),
         Game(
             home = "SV Poseidon Hamburg",
