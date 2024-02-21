@@ -70,7 +70,7 @@ fun TablesList(
                     modifier = Modifier.padding(8.dp)
                 )
             }
-            if (leagueKind == LeagueKinds.CUP) {
+            if (leagueKind == LeagueKinds.CUP || leagueKind == LeagueKinds.PLAYOFFS) {
                 CupTree(
                     tree = determineCupTree(l),
                     onGameClick = onGameClick,

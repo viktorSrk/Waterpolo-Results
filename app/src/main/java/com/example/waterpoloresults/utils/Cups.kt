@@ -5,7 +5,7 @@ import commons.League
 
 fun determineCupTree(cup: League) : Map<Int, List<Game>> {
     val leagueKind = determineLeagueKind(cup)
-    if (leagueKind != LeagueKinds.CUP) {
+    if (leagueKind != LeagueKinds.CUP && leagueKind != LeagueKinds.PLAYOFFS) {
         throw IllegalArgumentException("League is not a cup")
     }
 
