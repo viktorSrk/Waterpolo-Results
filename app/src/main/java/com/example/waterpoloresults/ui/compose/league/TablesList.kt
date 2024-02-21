@@ -16,10 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.waterpoloresults.ui.compose.components.CupTree
 import com.example.waterpoloresults.ui.compose.components.TableCard
 import com.example.waterpoloresults.ui.compose.components.TableDropdown
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
+import com.example.waterpoloresults.utils.LeagueKinds
 import com.example.waterpoloresults.utils.TableInfo
+import com.example.waterpoloresults.utils.determineCupTree
 import com.example.waterpoloresults.utils.determineLeagueKind
 import com.example.waterpoloresults.utils.groupDsvLeaguesByKind
 import commons.Game
@@ -29,7 +32,8 @@ import commons.LeagueDsvInfo
 
 @Composable
 fun TablesList(
-    leagues: List<League>
+    leagues: List<League>,
+    onGameClick: (Long) -> Unit = {}
 ) {
     val leaguesGroupedByKind = groupDsvLeaguesByKind(leagues)
 
@@ -49,33 +53,44 @@ fun TablesList(
             }
         }
         items(tables) { l ->
-            val tableInfo = TableInfo.createTable(l.games)
-            val positions = tableInfo.positions
-            val mp = tableInfo.mp
-            val pts = tableInfo.pts
-            val dif = tableInfo.dif
+
+            val leagueKind = determineLeagueKind(l)
 
             Row(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "Group ${l.dsvInfo?.dsvLeagueGroup ?: "?"}",
+                    text = "Group ${l.dsvInfo?.dsvLeagueGroup}",
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(8.dp).weight(1f)
                 )
                 Text(
-                    text = determineLeagueKind(l),
+                    text = leagueKind,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(8.dp)
                 )
             }
-            TableCard(
-                positions = positions,
-                mp = mp,
-                pts = pts,
-                dif = dif,
-                modifier = Modifier.padding(8.dp)
-            )
+            if (leagueKind == LeagueKinds.CUP || leagueKind == LeagueKinds.PLAYOFFS) {
+                CupTree(
+                    tree = determineCupTree(l),
+                    onGameClick = onGameClick,
+                    modifier = Modifier
+                )
+            } else {
+                val tableInfo = TableInfo.createTable(l.games)
+                val positions = tableInfo.positions
+                val mp = tableInfo.mp
+                val pts = tableInfo.pts
+                val dif = tableInfo.dif
+
+                TableCard(
+                    positions = positions,
+                    mp = mp,
+                    pts = pts,
+                    dif = dif,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
     }
 }

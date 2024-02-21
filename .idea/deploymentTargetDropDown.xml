@@ -2,21 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="FancyTabRowPreview">
-        <State />
-      </entry>
-      <entry key="GameResultSheetPreview">
-        <State />
-      </entry>
-      <entry key="GamesPreview">
-        <State />
-      </entry>
-      <entry key="LeaguePagesPreview">
-        <State />
-      </entry>
-      <entry key="LeaguePagesPreview (1)">
-        <State />
-      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
