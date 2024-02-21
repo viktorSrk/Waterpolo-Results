@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +25,15 @@ import com.example.waterpoloresults.R
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 
 @Composable
-fun PlayerRow(number: Int, name: String, goals: Int, fouls: Int, modifier: Modifier = Modifier) {
+fun PlayerRow(
+    number: Int,
+    name: String,
+    goals: Int,
+    fouls: Int,
+    modifier: Modifier = Modifier,
+    maxGoals: Boolean = false,
+    maxFouls: Boolean = false
+) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -51,13 +60,18 @@ fun PlayerRow(number: Int, name: String, goals: Int, fouls: Int, modifier: Modif
             modifier = Modifier
                 .padding(end = 16.dp)
                 .width(20.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = if (maxGoals) MaterialTheme.colorScheme.tertiary
+                    else MaterialTheme.colorScheme.onSurface,
+            fontWeight = if (maxGoals) FontWeight.Bold else FontWeight.Normal
         )
         Text(
             text = fouls.toString(),
             modifier = Modifier
                 .width(20.dp),
             textAlign = TextAlign.Center,
+            color = if (maxFouls) MaterialTheme.colorScheme.error
+                    else MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -154,7 +168,8 @@ fun PlayerRowPreview() {
                 number = 12,
                 name = "Viktor Sersik",
                 goals = 3,
-                fouls = 1
+                fouls = 1,
+                maxGoals = true
             )
         }
     }
