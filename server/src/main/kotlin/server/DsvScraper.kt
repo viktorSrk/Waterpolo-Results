@@ -278,7 +278,6 @@ class DsvScraper(val websiteUrl: String) {
                             val eventType = findFirst("#ContentSection__gameRepeater__eventkeyLabel_${currentEventIndex}").text
 
                             if (eventTimeHolder.attribute("style") == "text-decoration: line-through;") {
-                                currentEventIndex++
                                 continue
                             }
 

@@ -25,8 +25,10 @@ fun TeamStatsSheet(
     fouls: Map<Int, Int>,
     coach: String,
     timeouts: Int,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
 
+    val maxGoals = goals.maxOfOrNull { it.value } ?: -1
 
     LazyColumn(modifier = modifier) {
         item {
@@ -47,7 +49,9 @@ fun TeamStatsSheet(
                 fouls = foulsCommited,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(8.dp),
+                maxGoals = goalsScored == maxGoals,
+                maxFouls = foulsCommited >= 3
             )
         }
         item {
@@ -94,7 +98,9 @@ fun GameResultTeamSheetPreview() {
                     11 to 12,
                     12 to 5
                 ),
-                fouls = mapOf(),
+                fouls = mapOf(
+                    7 to 3
+                ),
                 coach = "Anders, Bernd",
                 timeouts = 2
             )
