@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.waterpoloresults.ui.compose.components.GPGScorerRow
 import com.example.waterpoloresults.ui.compose.components.PlayerRow
+import com.example.waterpoloresults.ui.compose.components.ScorerRow
 import com.example.waterpoloresults.ui.compose.components.TopScorerHeader
 import com.example.waterpoloresults.ui.theme.WaterpoloResultsTheme
 import commons.Game
@@ -41,6 +42,8 @@ fun TopScorerList(
     val matchesPlayed = games.flatMap { it.result?.teamSheets ?: emptyList() }
         .flatMap { it.players }.map { it.name }
         .groupBy { it }.mapValues { it.value.size }
+
+    val teamForPlayer = getTeamForPlayers(games)
 
     val goalScorerList = getGoalScorerList(games)
         .toList().sortedBy{ matchesPlayed[it.first] }.sortedByDescending { it.second }.toMap()
@@ -77,6 +80,7 @@ fun TopScorerList(
                     var position = 1
                     if (gpg) {
                         gpgScorerList.keys.forEach { scorer ->
+                            val team = teamForPlayer[scorer] ?: ""
                             val goals = gpgScorerList[scorer] ?: 0f
                             if (goals != previousGoals) {
                                 val index = gpgScorerList.values.indexOf(goals)
@@ -88,12 +92,14 @@ fun TopScorerList(
                             GPGScorerRow(
                                 number = position,
                                 name = scorer,
+                                team = team,
                                 goals = goals,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                         }
                     } else {
                         goalScorerList.keys.forEach { scorer ->
+                            val team = teamForPlayer[scorer] ?: ""
                             val goals = goalScorerList[scorer] ?: 0
                             val matches = matchesPlayed[scorer] ?: 0
                             if (goals.toFloat() != previousGoals) {
@@ -103,9 +109,10 @@ fun TopScorerList(
                                 previousGoals = goals.toFloat()
                             }
 
-                            PlayerRow(
+                            ScorerRow(
                                 position,
                                 scorer,
+                                team,
                                 goals,
                                 matches,
                                 modifier = Modifier.padding(vertical = 8.dp)
@@ -144,6 +151,24 @@ fun getGoalScorerList(games: List<Game>): Map<String, Int> {
     return result
 }
 
+fun getTeamForPlayers(games: List<Game>): Map<String, String> {
+    val result = mutableMapOf<String, String>()
+
+    for (game in games) {
+        val teamSheets = game.result?.teamSheets ?: emptyList()
+
+        for (i in 0..1) {
+            val teamName = if (i == 0) game.home else game.away
+            val team = teamSheets[i]
+
+            val playerNames = team.players.map{ it.name }
+            playerNames.forEach { result[it] = teamName }
+        }
+    }
+
+    return result
+}
+
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -153,6 +178,8 @@ fun TopScorerListPreview() {
             League(
                 games = listOf(
                     Game(
+                        home = "Team 1",
+                        away = "Team 2",
                         result = GameResult(
                             gameEvents = listOf(
                                 GoalGameEvent(scorerName = "Player 1", scorerNumber = 1),
@@ -167,7 +194,7 @@ fun TopScorerListPreview() {
                             teamSheets = listOf(
                                 TeamSheet(
                                     players = listOf(
-                                        TeamSheet.Player(name = "Player 1", number = 1),
+                                        TeamSheet.Player(name = "Player 113123123123123123123123123123123123123", number = 1),
                                         TeamSheet.Player(name = "Player 2", number = 2),
                                         TeamSheet.Player(name = "Player 3", number = 3)
                                     )
@@ -177,6 +204,8 @@ fun TopScorerListPreview() {
                         )
                     ),
                     Game(
+                        home = "Team 1",
+                        away = "Team 2",
                         result = GameResult(
                             gameEvents = listOf(
                                 GoalGameEvent(scorerName = "Player 1", scorerNumber = 1),

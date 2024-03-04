@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -22,6 +24,7 @@ import com.example.waterpoloresults.R
 fun GPGScorerRow(
     number: Int,
     name: String,
+    team: String,
     goals: Float,
     modifier: Modifier = Modifier,
 ) {
@@ -43,6 +46,15 @@ fun GPGScorerRow(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier
+                .padding(end = 8.dp)
+                .widthIn(max = 200.dp)
+        )
+        Text(
+            text = "($team)",
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
                 .padding(end = 16.dp)
                 .weight(1f)
         )
@@ -53,6 +65,61 @@ fun GPGScorerRow(
             text = goalsString,
             modifier = Modifier
                 .padding(end = 16.dp),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun ScorerRow(
+    number: Int,
+    name: String,
+    team: String,
+    goals: Int,
+    matches: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = number.toString(),
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .width(20.dp),
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = name,
+            style = MaterialTheme.typography.titleMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .widthIn(max = 200.dp)
+        )
+        Text(
+            text = "($team)",
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .weight(1f)
+        )
+        Text(
+            text = goals.toString(),
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .width(20.dp),
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = matches.toString(),
+            modifier = Modifier
+                .width(20.dp),
             textAlign = TextAlign.Center
         )
     }
