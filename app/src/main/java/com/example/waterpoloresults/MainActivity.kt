@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     companion object {
-        const val SERVER_URL = "192.168.2.165:8080"
+        const val SERVER_URL = "192.168.0.169:8080"
         val sut = ServerUtils(SERVER_URL)
 
         val leagues = mutableStateOf(listOf<League>())
