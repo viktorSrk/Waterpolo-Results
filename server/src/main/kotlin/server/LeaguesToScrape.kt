@@ -6,11 +6,13 @@ object LeaguesToScrape {
             "C" to listOf("")
         ),
         297 to mapOf(
-            "V" to listOf("A", "B")
+            "V" to listOf("A", "B"),
+            "P" to listOf("A", "B")
         ),
         301 to mapOf(
             "V" to listOf("A", "B", "C"),
-            "Z" to listOf("D", "E", "F")
+            "Z" to listOf("D", "E", "F"),
+            "L" to listOf("G", "H")
         ),
         188 to mapOf(
             "L" to listOf("")
@@ -67,6 +69,7 @@ object LeaguesToScrape {
 
         307 to mapOf(
             "V" to listOf("A", "B"),
+            "E" to listOf("C", "D")
         ),
 
         171 to mapOf(
