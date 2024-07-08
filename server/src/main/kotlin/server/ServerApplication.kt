@@ -36,18 +36,24 @@ fun main(args: Array<String>) {
 //			gameEventController,
 //			teamSheetController
 //		)
-		scrapeCertainLeagues(
-			dsvScraper,
-			leagueController,
-			gameController,
-			gameResultController,
-			gameEventController,
-			teamSheetController,
+		try {
+			println("Scraping certain leagues ...");
+			scrapeCertainLeagues(
+				dsvScraper,
+				leagueController,
+				gameController,
+				gameResultController,
+				gameEventController,
+				teamSheetController,
 
-			LeaguesToScrape.dsvLeagueIds,
-			LeaguesToScrape.leagueNames,
-			LeaguesToScrape.leagueRegions
-		)
+				LeaguesToScrape.dsvLeagueIds,
+				LeaguesToScrape.leagueNames,
+				LeaguesToScrape.leagueRegions
+			)
+		} catch (e: Exception) {
+			println("Error: ${e.message}");
+			println("Trying again ...");
+		}
 	}
 }
 
