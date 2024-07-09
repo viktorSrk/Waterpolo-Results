@@ -45,7 +45,7 @@ class DsvLiveScraper(val websiteUrl: String) {
         val home = response.get("HomeClubname") as String
         val away = response.get("GuestClubname") as String
         val date: Long = 0 // TODO: Parse date
-        val league: League = League(
+        val league = League(
             dsvInfo = LeagueDsvInfo(
                 dsvLeagueSeason = response.get("Season") as Int,
                 dsvLeagueId = response.get("LeagueID") as Int,

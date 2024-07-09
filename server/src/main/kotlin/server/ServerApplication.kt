@@ -41,7 +41,7 @@ fun main(args: Array<String>) {
 //			teamSheetController
 //		)
 		try {
-			println("Scraping certain leagues ...");
+			println("Scraping certain leagues ...")
 			scrapeCertainLeagues(
 				dsvScraper,
 				leagueController,
@@ -55,8 +55,8 @@ fun main(args: Array<String>) {
 				LeaguesToScrape.leagueRegions
 			)
 		} catch (e: Exception) {
-			println("Error: ${e.message}");
-			println("Trying again ...");
+			println("Error: ${e.message}")
+			println("Trying again ...")
 		}
 	}
 }
