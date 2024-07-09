@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm")
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
+	application
 }
 
 group = "com.example"
@@ -46,4 +47,8 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+application {
+	mainClass.set("server.ServerApplicationKt")
 }
