@@ -31,6 +31,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 	implementation("it.skrape:skrapeit:1.2.2")
+
+	implementation("com.squareup.okhttp3:okhttp:4.9.3")
 }
 
 evaluationDependsOn(":commons")

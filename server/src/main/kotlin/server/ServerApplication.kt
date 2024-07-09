@@ -21,11 +21,15 @@ fun main(args: Array<String>) {
 	val context: ApplicationContext = runApplication<ServerApplication>(*args)
 
 	val dsvScraper = DsvScraper("https://dsvdaten.dsv.de/Modules/WB/")
+	val dsvLiveScraper = DsvLiveScraper("https://lizenz.dsv.de/")
+
 	val leagueController: LeagueController = context.getBean(LeagueController::class.java)
 	val gameController: GameController = context.getBean(GameController::class.java)
 	val gameResultController: GameResultController = context.getBean(GameResultController::class.java)
 	val gameEventController: GameEventController = context.getBean(GameEventController::class.java)
 	val teamSheetController: TeamSheetController = context.getBean(TeamSheetController::class.java)
+
+	println(dsvLiveScraper.getLiveGames())
 
 	while (true) {
 //		scrapeAllDsv(
