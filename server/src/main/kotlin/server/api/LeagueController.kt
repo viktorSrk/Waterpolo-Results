@@ -3,6 +3,7 @@ package server.api
 import commons.League
 import commons.LeagueDsvInfo
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.jpa.repository.Query
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -25,6 +26,13 @@ class LeagueController(
 
     @GetMapping(path = ["/{id}"])
     fun getLeagueById(@PathVariable id: Long): League = repo.getReferenceById(id)
+
+    @GetMapping(path = ["/dsvInfo"])
+    fun getLeagueByDsvInfo(@RequestBody dsvInfo: LeagueDsvInfo): League?
+        = repo.findLeagueByDsvParameters(dsvInfo.dsvLeagueSeason,
+                                         dsvInfo.dsvLeagueId,
+                                         dsvInfo.dsvLeagueGroup,
+                                         dsvInfo.dsvLeagueKind)
 
     @PostMapping(path = ["", "/"])
     fun addLeague(@RequestBody league: League): ResponseEntity<League> {
