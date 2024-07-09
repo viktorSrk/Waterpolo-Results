@@ -29,7 +29,9 @@ fun main(args: Array<String>) {
 	val gameEventController: GameEventController = context.getBean(GameEventController::class.java)
 	val teamSheetController: TeamSheetController = context.getBean(TeamSheetController::class.java)
 
-	println(dsvLiveScraper.getLiveGames())
+	// TODO: Remove this test code and implement the actual scraping logic through multiple threads
+	val test = dsvLiveScraper.getLiveGames()
+	dsvLiveScraper.getGameEvents(test[0].first.first, test[0].first.second, test[0].second.first, test[0].second.second)
 
 	while (true) {
 //		scrapeAllDsv(
