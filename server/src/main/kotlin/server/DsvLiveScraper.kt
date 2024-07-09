@@ -11,9 +11,11 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import server.api.GameController
 
-class DsvLiveScraper(val websiteUrl: String) {
-    fun getLiveGames(): List<Game> {
+class DsvLiveScraper(private val websiteUrl: String, val gameController: GameController? = null) {
+
+    fun getLiveGames(): List<Pair<LeagueDsvInfo, GameDsvInfo>> {
         val client = OkHttpClient()
 
         val mediaType = "application/x-www-form-urlencoded".toMediaType()
@@ -33,30 +35,25 @@ class DsvLiveScraper(val websiteUrl: String) {
         }
 
         val gamesResponses: ArrayList<LinkedHashMap<String, Any>> = responseObject.get("R") as ArrayList<LinkedHashMap<String, Any>>
-        val games: MutableList<Game> = ArrayList()
+        val pairs: MutableList<Pair<LeagueDsvInfo, GameDsvInfo>> = ArrayList()
         gamesResponses.forEach {
-            games.add(parseGame(it))
+            pairs.add(parseGame(it))
         }
 
-        return games.toList()
+        return pairs.toList()
     }
 
-    private fun parseGame(response: LinkedHashMap<String, Any>): Game {
-        val home = response.get("HomeClubname") as String
-        val away = response.get("GuestClubname") as String
-        val date: Long = 0 // TODO: Parse date
-        val league = League(
-            dsvInfo = LeagueDsvInfo(
-                dsvLeagueSeason = response.get("Season") as Int,
-                dsvLeagueId = response.get("LeagueID") as Int,
-                dsvLeagueGroup = response.get("Gruppe") as String,
-                dsvLeagueKind = response.get("LeagueKind") as String
-            )
+    private fun parseGame(response: LinkedHashMap<String, Any>): Pair<LeagueDsvInfo, GameDsvInfo> {
+        val leagueDsvInfo = LeagueDsvInfo(
+            dsvLeagueSeason = response.get("Season") as Int,
+            dsvLeagueId = response.get("LeagueID") as Int,
+            dsvLeagueGroup = response.get("Gruppe") as String,
+            dsvLeagueKind = response.get("LeagueKind") as String
         )
-        val result: GameResult? = null // TODO: Get result
-        val dsvInfo = GameDsvInfo(
+        val gameDsvInfo = GameDsvInfo(
             dsvGameId = response.get("GameID") as Int
         )
-        return Game(home = home, away = away, league = league, dsvInfo = dsvInfo)
+        return Pair(leagueDsvInfo, gameDsvInfo)
     }
+
 }
