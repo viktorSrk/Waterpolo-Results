@@ -31,7 +31,7 @@ fun main(args: Array<String>) {
 
 	// TODO: Remove this test code and implement the actual scraping logic through multiple threads
 	val test = dsvLiveScraper.getLiveGames()
-	dsvLiveScraper.getGameEvents(test[0].first.first, test[0].first.second, test[0].second.first, test[0].second.second)
+	dsvLiveScraper.getGameEvents(test[1].first.first, test[1].first.second, test[1].second[0] as String, test[1].second[1] as Int, test[1].second[2] as String, test[1].second[3] as Int)
 
 	while (true) {
 //		scrapeAllDsv(
