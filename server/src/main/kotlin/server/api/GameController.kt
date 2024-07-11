@@ -3,6 +3,7 @@ package server.api
 import commons.Game
 import commons.GameDsvInfo
 import commons.GameResult
+import commons.LeagueDsvInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
@@ -46,6 +47,11 @@ class GameController(
         assoc.result = result
         assoc = repo.save(assoc)
         return ResponseEntity.ok(assoc)
+    }
+
+    fun getIdByDsvInfo(@RequestBody gameDsvInfo: GameDsvInfo, @RequestBody leagueDsvInfo: LeagueDsvInfo): Long {
+        val game = repo.findGameByDsvInfo(gameDsvInfo.dsvGameId, leagueDsvInfo.dsvLeagueSeason, leagueDsvInfo.dsvLeagueId, leagueDsvInfo.dsvLeagueGroup, leagueDsvInfo.dsvLeagueKind)
+        return game?.id ?: -1
     }
 
     @Transactional

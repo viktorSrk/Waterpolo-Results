@@ -46,7 +46,7 @@ fun main(args: Array<String>) {
 		),
 		dsvInfo = test[0].first.second
 	)
-	scrapeCertainGameLive(dsvLiveScraper, game, test)
+//	scrapeCertainGameLive(dsvLiveScraper, game, test)
 
 	while (true) {
 		try {
