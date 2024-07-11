@@ -1,7 +1,10 @@
 package server
 
 import commons.Game
+import commons.GameDsvInfo
+import commons.GameResult
 import commons.League
+import commons.LeagueDsvInfo
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
@@ -31,17 +34,21 @@ fun main(args: Array<String>) {
 
 	// TODO: Remove this test code and implement the actual scraping logic through multiple threads
 	val test = dsvLiveScraper.getLiveGames()
-	dsvLiveScraper.getGameEvents(test[1].first.first, test[1].first.second, test[1].second[0] as String, test[1].second[1] as Int, test[1].second[2] as String, test[1].second[3] as Int)
+	val game = Game(
+		home = "Hamburg",
+		away = "Eimsbüttel",
+		date = 1620000000,
+		league = League(
+			dsvInfo = test[0].first.first
+		),
+		result = GameResult(
+
+		),
+		dsvInfo = test[0].first.second
+	)
+	scrapeCertainGameLive(dsvLiveScraper, game, test)
 
 	while (true) {
-//		scrapeAllDsv(
-//			dsvScraper,
-//			leagueController,
-//			gameController,
-//			gameResultController,
-//			gameEventController,
-//			teamSheetController
-//		)
 		try {
 			println("Scraping certain leagues ...")
 			scrapeCertainLeagues(
@@ -105,6 +112,51 @@ fun scrapeCertainLeagues(
 			teamSheetController.addTeamSheets(teamSheets, result.id)
 		}
 	}
+}
+
+
+fun scrapeCertainGameLive(
+	dsvLiveScraper: DsvLiveScraper,
+
+	game: Game,
+	liveGames: List<Pair<Pair<LeagueDsvInfo, GameDsvInfo>, Array<Any>>>,
+
+	pushToRepo: Boolean = false,
+	gameController: GameController? = null
+): Game {
+	if (pushToRepo && gameController == null) {
+		throw IllegalArgumentException("gameController must be provided and be non-null when pushToRepo is true")
+	}
+
+	val liveGame = liveGames.find {
+		((it.first.first == game.league?.dsvInfo) ?: false)
+				&& (it.first.second == game.dsvInfo)
+	}
+
+	if (liveGame == null) {
+		throw NoSuchElementException("Cannot find the game within liveGames")
+	}
+
+	while (!game.result?.finished!!) {
+		val events = dsvLiveScraper.getGameEvents(
+			liveGame.first.first,
+			liveGame.first.second,
+			liveGame.second[0] as String,
+			liveGame.second[1] as Int,
+			liveGame.second[2] as String,
+			liveGame.second[3] as Int
+		)
+
+		game.result!!.gameEvents = events
+		game.result!!.calculateTeamScoreFromEvents(teamHome = true)
+		game.result!!.calculateTeamScoreFromEvents(teamAway = true)
+
+		if (pushToRepo) {
+			gameController!!.updateGameResult(game.result!!, game.id)
+		}
+	}
+
+	return game
 }
 
 

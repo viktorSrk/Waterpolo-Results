@@ -43,6 +43,9 @@ data class GameResult(
 
         val score = arrayOf(0, 0, 0, 0)
         for (i in 0..gameEvents.size) {
+            if (i == gameEvents.size) {
+                break
+            }
             val it = gameEvents[i]
             if (it !is GoalGameEvent || it.scorerTeamHome != teamHome) {
                 continue
