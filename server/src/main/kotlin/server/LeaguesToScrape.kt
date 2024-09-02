@@ -1,7 +1,7 @@
 package server
 
 object LeaguesToScrape {
-    val dsvLeagueIds = mapOf(
+    var dsvLeagueIds = mapOf(
         299 to mapOf(
             "C" to listOf("")
         ),

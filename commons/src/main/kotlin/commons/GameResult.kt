@@ -50,7 +50,7 @@ data class GameResult(
             if (it !is GoalGameEvent || it.scorerTeamHome != teamHome) {
                 continue
             }
-            score[it.quarter]++
+            score[it.quarter - 1]++
         }
 
         if (teamHome) {

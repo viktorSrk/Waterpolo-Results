@@ -6,6 +6,7 @@ import commons.GameResult
 import commons.LeagueDsvInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -41,13 +42,19 @@ class GameController(
         return ResponseEntity.ok(saved)
     }
 
-    @PutMapping(path = ["/updateResult/{id}"])
-    fun updateGameResult(@RequestBody result: GameResult, @PathVariable id: Long): ResponseEntity<Game> {
-        var assoc = repo.getReferenceById(id)
-        assoc.result = result
-        assoc = repo.save(assoc)
-        return ResponseEntity.ok(assoc)
-    }
+//    @PutMapping(path = ["/updateResult/{id}"])
+//    fun updateGameResult(@RequestBody result: GameResult, @PathVariable id: Long): ResponseEntity<Game> {
+//        var assoc: Game
+//        try {
+//            assoc = repo.getReferenceById(id)
+//        } catch (e: JpaObjectRetrievalFailureException) {
+//            println("Game not found")
+//            return ResponseEntity.badRequest().build()
+//        }
+//        assoc.result = result
+//        assoc = repo.save(assoc)
+//        return ResponseEntity.ok(assoc)
+//    }
 
     fun getIdByDsvInfo(@RequestBody gameDsvInfo: GameDsvInfo, @RequestBody leagueDsvInfo: LeagueDsvInfo): Long {
         val game = repo.findGameByDsvInfo(gameDsvInfo.dsvGameId, leagueDsvInfo.dsvLeagueSeason, leagueDsvInfo.dsvLeagueId, leagueDsvInfo.dsvLeagueGroup, leagueDsvInfo.dsvLeagueKind)
@@ -61,13 +68,39 @@ class GameController(
 
         val assoc = leagueRepo.getReferenceById(leagueId)
 
-        val existingGames = assoc.games
-        repo.deleteAll(existingGames)
+        val updatedGames = mutableListOf<Game>()
 
-        var saved: List<Game> = games.map { it.league = assoc; it }
-        saved = repo.saveAll(saved)
+        games.forEach { newGame ->
+            val existingGame = repo.findGameByDsvInfo(
+                newGame.dsvInfo?.dsvGameId ?: -1,
+                assoc.dsvInfo?.dsvLeagueSeason ?: -1,
+                assoc.dsvInfo?.dsvLeagueId ?: -1,
+                assoc.dsvInfo?.dsvLeagueGroup ?: "",
+                assoc.dsvInfo?.dsvLeagueKind ?: ""
+            )
 
-        return ResponseEntity.ok(saved)
+            if (existingGame != null) {
+                // Update existing game fields here
+                // Example: existingGame.someField = newGame.someField
+                existingGame.home = newGame.home
+                existingGame.away = newGame.away
+                existingGame.date = newGame.date
+//                existingGame.result = newGame.result
+                updatedGames.add(repo.save(existingGame))
+            } else {
+                // Set the league association for the new game
+                newGame.league = assoc
+                updatedGames.add(repo.save(newGame))
+            }
+        }
+
+//        val existingGames = assoc.games
+//        repo.deleteAll(existingGames)
+//
+//        var saved: List<Game> = games.map { it.league = assoc; it }
+//        saved = repo.saveAll(saved)
+
+        return ResponseEntity.ok(updatedGames)
     }
 
     @PostMapping(path = ["/addDsvInfo/{gameId}"])

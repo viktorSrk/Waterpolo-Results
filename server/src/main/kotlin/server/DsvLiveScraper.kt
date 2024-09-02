@@ -59,10 +59,13 @@ class DsvLiveScraper(private val websiteUrl: String, val gameController: GameCon
         val homeTeamId = response.get("HomeTeamID") as Int
         val guestRegId = response.get("GuestRegID") as String
         val guestTeamId = response.get("GuestTeamID") as Int
+        // TODO: get the finishing time of a game with: response.get("EndGame") as String (format: "yyyy-mm-ddThh:mm:ss"), if still running: "0001-01-01T00:00:00"
         return Pair(Pair(leagueDsvInfo, gameDsvInfo), arrayOf(homeRegId, homeTeamId, guestRegId, guestTeamId))
     }
 
-    fun getGameEvents(leagueDsvInfo: LeagueDsvInfo, gameDsvInfo: GameDsvInfo, homeRegId: String, homeTeamId: Int, guesRegId: String, guestTeamId: Int): List<GameEvent> {
+    fun getGameEvents(leagueDsvInfo: LeagueDsvInfo, gameDsvInfo: GameDsvInfo, homeRegId: String, homeTeamId: Int, guestRegId: String, guestTeamId: Int): List<GameEvent> {
+        println("getting game events (dsvGameId = ${gameDsvInfo.dsvGameId})")
+
         val client = OkHttpClient()
 
         val mediaType = "application/x-www-form-urlencoded".toMediaType()
@@ -75,7 +78,7 @@ class DsvLiveScraper(private val websiteUrl: String, val gameController: GameCon
                     "%22${gameDsvInfo.dsvGameId}%22%2C" +
                     "%22$homeRegId%22%2C" +
                     "%22$homeTeamId%22%2C" +
-                    "%22$guesRegId%22%2C" +
+                    "%22$guestRegId%22%2C" +
                     "%22$guestTeamId%22" +
                 "%5D" +
                 "%2C%22I%22%3A1%7D").toRequestBody(mediaType)
@@ -123,13 +126,15 @@ class DsvLiveScraper(private val websiteUrl: String, val gameController: GameCon
             name = response.get("GamePlanPlayer") as String
         }
 
-        val capHome = response.get("Cap") as Int
-        val capAway = response.get("Cap2") as Int
+        val capHome = (response.get("GamePlanHome") as String).toIntOrNull()
+        val capAway = (response.get("GamePlanGuest") as String).toIntOrNull()
 
-        val number = if (capHome != 0) capHome else capAway
-        val teamHome = capHome != 0
+        val teamHome = capHome != null
+        val number = (if (teamHome) capHome else capAway)!!
 
         val eventKey = response.get("EventKey") as String
+
+        // TODO: use ("Active": false) for deleted events
 
         val event: GameEvent? = when (eventKey) {
             "T" -> GoalGameEvent(

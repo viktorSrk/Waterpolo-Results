@@ -17,9 +17,9 @@ data class Game(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    val home: String = "",
-    val away: String = "",
-    val date: Long = Long.MAX_VALUE,
+    var home: String = "",
+    var away: String = "",
+    var date: Long = Long.MAX_VALUE,
 
     @JsonBackReference
     @ManyToOne(cascade = [CascadeType.ALL])
