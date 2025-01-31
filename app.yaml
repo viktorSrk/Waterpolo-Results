@@ -1,0 +1,7 @@
+runtime: java17
+entrypoint: java -jar server/build/libs/server-0.0.1-SNAPSHOT.jar
+automatic_scaling:
+  min_instances: 1
+  max_instances: 1
+#  cool_down_period_sec: 6000
+#  request_timeout: 600s

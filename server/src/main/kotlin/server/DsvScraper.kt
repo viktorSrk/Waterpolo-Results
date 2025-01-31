@@ -96,6 +96,8 @@ class DsvScraper(val websiteUrl: String) {
         val leagues = LeagueSetHolder()
 
         for (id in dsvLeagueIds.keys) {
+            println("Scraping league $id");
+
             for ((kind, groups) in dsvLeagueIds[id]!!) { for (group in groups) {
                 val dsvInfo = LeagueDsvInfo(
                     dsvLeagueSeason = 2023,
@@ -132,6 +134,8 @@ class DsvScraper(val websiteUrl: String) {
 
     fun scrapeGames(league: League): List<Game> {
         if (league.dsvInfo == null) return emptyList()
+
+        println("Scraping games for league ${league.name}");
 
         val games = skrape(HttpFetcher) {
             request {
@@ -201,6 +205,8 @@ class DsvScraper(val websiteUrl: String) {
     fun scrapeGameResult(game: Game): GameResult {
         if (game.dsvInfo == null) return GameResult()
 
+        println("Scraping result for game ${game.home} vs ${game.away}");
+
         val gameResult = skrape(HttpFetcher) {
             request {
                 url = websiteUrl + game.dsvInfo!!.buildGameLink()
@@ -242,6 +248,8 @@ class DsvScraper(val websiteUrl: String) {
 
     fun scrapeGameEvents(result: GameResult): List<GameEvent> {
         if (result.game == null || result.game!!.dsvInfo == null) return emptyList()
+
+        println("Scraping events for game ${result.game!!.home} vs ${result.game!!.away}");
 
         val gameEvents = skrape(HttpFetcher) {
             request {
