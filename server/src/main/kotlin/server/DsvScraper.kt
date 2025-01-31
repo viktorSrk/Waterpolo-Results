@@ -96,8 +96,6 @@ class DsvScraper(val websiteUrl: String) {
         val leagues = LeagueSetHolder()
 
         for (id in dsvLeagueIds.keys) {
-            println("Scraping league $id");
-
             for ((kind, groups) in dsvLeagueIds[id]!!) { for (group in groups) {
                 val dsvInfo = LeagueDsvInfo(
                     dsvLeagueSeason = 2023,
@@ -140,6 +138,7 @@ class DsvScraper(val websiteUrl: String) {
         val games = skrape(HttpFetcher) {
             request {
                 url = websiteUrl + league.dsvInfo!!.buildLeagueLink()
+                println(url)
             }
 
             extractIt<GameSetHolder> { results ->
@@ -210,6 +209,7 @@ class DsvScraper(val websiteUrl: String) {
         val gameResult = skrape(HttpFetcher) {
             request {
                 url = websiteUrl + game.dsvInfo!!.buildGameLink()
+                println(url)
             }
 
             extractIt<GameResult> { result ->
@@ -226,15 +226,16 @@ class DsvScraper(val websiteUrl: String) {
                     val homeScore = arrayOf(0, 0, 0, 0)
                     val awayScore = arrayOf(0, 0, 0, 0)
                     try {
+                        val quarterScores = findFirst("#ContentSection_scoreboard_data").findFirst(".table").findAll("tr")[2].findAll("td")
+                        val quarterScoresHome = quarterScores[0].text.split("-")
+                        val quarterScoresAway = quarterScores[1].text.split("-")
                         for (i in 0..3) {
-                            val quarterScoreHome =
-                                findFirst("#ContentSection__${i + 1}homeLabel").text
-                            val quarterScoreAway =
-                                findFirst("#ContentSection__${i + 1}guestLabel").text
-                            homeScore[i] = quarterScoreHome.toInt()
-                            awayScore[i] = quarterScoreAway.toInt()
+                            homeScore[i] = quarterScoresHome[i].toInt()
+                            awayScore[i] = quarterScoresAway[i].toInt()
                         }
-                    } catch (_: ElementNotFoundException) {}
+                    } catch (_: ElementNotFoundException) {
+                        println("Could not find quarter scores")
+                    }
 
                     result.finished = finished
                     result.homeScore = homeScore
@@ -248,8 +249,6 @@ class DsvScraper(val websiteUrl: String) {
 
     fun scrapeGameEvents(result: GameResult): List<GameEvent> {
         if (result.game == null || result.game!!.dsvInfo == null) return emptyList()
-
-        println("Scraping events for game ${result.game!!.home} vs ${result.game!!.away}");
 
         val gameEvents = skrape(HttpFetcher) {
             request {
