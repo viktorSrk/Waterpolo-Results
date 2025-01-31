@@ -1,0 +1,13 @@
+# File: cloudbuild.yaml
+
+steps:
+  - name: 'gcr.io/cloud-builders/gradle'
+    args: ['clean', 'assemble']
+    env:
+      - 'ANDROID_HOME=/root/Library/Android/sdk'
+      - 'GRADLE_USER_HOME=/root/.gradle'
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['run', 'deploy', 'waterpolo-results', '--source', '.']
+    env:
+      - 'GOOGLE_RUNTIME_VERSION=17'
+      - 'GOOGLE_ENTRYPOINT=server.ServerApplicationKt'
