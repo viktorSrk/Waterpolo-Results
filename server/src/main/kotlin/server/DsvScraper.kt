@@ -272,7 +272,7 @@ class DsvScraper(val websiteUrl: String) {
                     while (true) {
                         try {
                             var eventQuarterString = findFirst("#ContentSection__gameRepeater__periodLabel_${currentEventIndex}").text
-                            if (eventQuarterString == "5m") {
+                            if (eventQuarterString == "5m" || eventQuarterString == "EW") {
                                 eventQuarterString = "5"
                             }
                             val eventQuarter = eventQuarterString.toInt()
