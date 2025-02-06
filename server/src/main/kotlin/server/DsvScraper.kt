@@ -98,7 +98,7 @@ class DsvScraper(val websiteUrl: String) {
         for (id in dsvLeagueIds.keys) {
             for ((kind, groups) in dsvLeagueIds[id]!!) { for (group in groups) {
                 val dsvInfo = LeagueDsvInfo(
-                    dsvLeagueSeason = 2023,
+                    dsvLeagueSeason = 2024,
                     dsvLeagueId = id,
                     dsvLeagueGroup = group,
                     dsvLeagueKind = kind

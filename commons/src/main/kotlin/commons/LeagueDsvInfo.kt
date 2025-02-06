@@ -19,7 +19,7 @@ data class LeagueDsvInfo(
     @JoinColumn(name = "league_id", referencedColumnName = "id")
     var league: League? = null,
 
-    var dsvLeagueSeason: Int = 2023,
+    var dsvLeagueSeason: Int = 2024,
     var dsvLeagueId: Int = -1,
     var dsvLeagueGroup: String = "",
     var dsvLeagueKind: String = ""

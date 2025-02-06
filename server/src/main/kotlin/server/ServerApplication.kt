@@ -38,11 +38,11 @@ suspend fun main(args: Array<String>) {
 	val gameEventController: GameEventController = context.getBean(GameEventController::class.java)
 	val teamSheetController: TeamSheetController = context.getBean(TeamSheetController::class.java)
 
-	LeaguesToScrape.dsvLeagueIds = mapOf(
-		142 to mapOf(
-			"L" to listOf("")
-		)
-	) // TODO: remove
+//	LeaguesToScrape.dsvLeagueIds = mapOf(
+//		142 to mapOf(
+//			"L" to listOf("")
+//		)
+//	) // TODO: remove
 	while (true)
 		try {
 			println("scraping ...")
