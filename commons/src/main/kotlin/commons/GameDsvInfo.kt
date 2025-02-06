@@ -29,4 +29,13 @@ data class GameDsvInfo(
                 "&LeagueKind=" + game!!.league!!.dsvInfo!!.dsvLeagueKind +
                 "&GameID=" + dsvGameId
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GameDsvInfo
+
+        return dsvGameId == other.dsvGameId
+    }
 }

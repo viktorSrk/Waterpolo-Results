@@ -26,6 +26,13 @@ class LeagueController(
     @GetMapping(path = ["/{id}"])
     fun getLeagueById(@PathVariable id: Long): League = repo.getReferenceById(id)
 
+    @GetMapping(path = ["/dsvInfo"])
+    fun getLeagueByDsvInfo(@RequestBody dsvInfo: LeagueDsvInfo): League?
+        = repo.findLeagueByDsvParameters(dsvInfo.dsvLeagueSeason,
+                                         dsvInfo.dsvLeagueId,
+                                         dsvInfo.dsvLeagueGroup,
+                                         dsvInfo.dsvLeagueKind)
+
     @PostMapping(path = ["", "/"])
     fun addLeague(@RequestBody league: League): ResponseEntity<League> {
         if (getLeagues().contains(league)) {

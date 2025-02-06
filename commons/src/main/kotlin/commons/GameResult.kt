@@ -3,6 +3,7 @@ package commons
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import commons.gameevents.GameEvent
+import commons.gameevents.GoalGameEvent
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -34,5 +35,31 @@ data class GameResult(
     @JoinColumn(name = "game_id", referencedColumnName = "id")
     var game: Game? = null
 ) {
+
+    fun calculateTeamScoreFromEvents(teamHome: Boolean = false, teamAway: Boolean = false): Array<Int> {
+        if (teamHome == teamAway) {
+            throw IllegalArgumentException("Both arguments (teams) cannot be the same value = $teamHome")
+        }
+
+        val score = arrayOf(0, 0, 0, 0)
+        for (i in 0..gameEvents.size) {
+            if (i == gameEvents.size) {
+                break
+            }
+            val it = gameEvents[i]
+            if (it !is GoalGameEvent || it.scorerTeamHome != teamHome) {
+                continue
+            }
+            score[it.quarter - 1]++
+        }
+
+        if (teamHome) {
+            homeScore = score
+        } else {
+            awayScore = score
+        }
+
+        return score
+    }
 
 }
