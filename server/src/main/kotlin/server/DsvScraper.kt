@@ -235,6 +235,15 @@ class DsvScraper(val websiteUrl: String) {
                         }
                     } catch (_: ElementNotFoundException) {
                         println("Could not find quarter scores")
+                    } catch (_: IndexOutOfBoundsException) {
+                        val totalScores = findFirst("#ContentSection_scoreboard_data").findFirst(".table").findAll("tr")[1].findAll("td")
+                        homeScore[0] = totalScores[0].text.toInt()
+                        awayScore[0] = totalScores[1].text.toInt()
+                    }
+
+                    if ((homeScore.sum() == 10 && awayScore.sum() == 0) || (homeScore.sum() == 0 && awayScore.sum() == 10)) {
+                        println("Game won through decision not play!")
+                        finished = true
                     }
 
                     result.finished = finished

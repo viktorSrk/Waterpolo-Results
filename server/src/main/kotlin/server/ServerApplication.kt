@@ -12,6 +12,7 @@ import server.api.GameEventController
 import server.api.GameResultController
 import server.api.LeagueController
 import server.api.TeamSheetController
+import java.lang.reflect.InvocationTargetException
 
 @SpringBootApplication
 @EntityScan(basePackages = ["commons", "server"])
@@ -66,31 +67,42 @@ fun scrapeCertainLeagues(
 	val leagues: List<League> = dsvScraper.scrapeCertainLeagues(dsvLeagueIds, leagueNames, leagueRegions)
 
 	for (l in leagues) {
-		val leagueResponse: ResponseEntity<League> = leagueController.addLeague(l)
+		var success = false
+		while (!success) {
+			try {
+				val leagueResponse: ResponseEntity<League> = leagueController.addLeague(l)
 
-		val leagueId: Long = leagueResponse.body!!.id
-		if (leagueResponse.body!!.dsvInfo != l.dsvInfo) {
-			leagueController.setDsvInfo(l.dsvInfo!!, leagueId)
-		}
+				val leagueId: Long = leagueResponse.body!!.id
+				if (leagueResponse.body!!.dsvInfo != l.dsvInfo) {
+					leagueController.setDsvInfo(l.dsvInfo!!, leagueId)
+				}
 
-		val games: List<Game> = dsvScraper.scrapeGames(leagueController.getLeagueById(leagueId))
-		val gamesResponse = gameController.addAllGames(games, leagueId)
+				val games: List<Game> =
+					dsvScraper.scrapeGames(leagueController.getLeagueById(leagueId))
+				val gamesResponse = gameController.addAllGames(games, leagueId)
 
-		for (g in gamesResponse.body!!) {
-			val gameId = g.id
+				for (g in gamesResponse.body!!) {
+					val gameId = g.id
 
-			gameController.setDsvInfo(g.dsvInfo!!, gameId)
+					gameController.setDsvInfo(g.dsvInfo!!, gameId)
 
-			val addedGame = gameController.getGameById(gameId)
-			var result = dsvScraper.scrapeGameResult(addedGame)
-			val resultResponse = gameResultController.setResult(result, gameId)
-			result = resultResponse.body!!
+					val addedGame = gameController.getGameById(gameId)
+					var result = dsvScraper.scrapeGameResult(addedGame)
+					val resultResponse = gameResultController.setResult(result, gameId)
+					result = resultResponse.body!!
 
-			val gameEvents = dsvScraper.scrapeGameEvents(result)
-			gameEventController.addAllEvents(gameEvents, result.id)
+					val gameEvents = dsvScraper.scrapeGameEvents(result)
+					gameEventController.addAllEvents(gameEvents, result.id)
 
-			val teamSheets = dsvScraper.scrapeTeamSheets(result)
-			teamSheetController.addTeamSheets(teamSheets, result.id)
+					val teamSheets = dsvScraper.scrapeTeamSheets(result)
+					teamSheetController.addTeamSheets(teamSheets, result.id)
+				}
+
+				success = true
+			} catch (e: Exception) {
+				println("Exception: ${e.message}")
+				println("Retrying...")
+			}
 		}
 	}
 }
