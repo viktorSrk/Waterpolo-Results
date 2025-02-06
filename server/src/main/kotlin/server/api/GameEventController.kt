@@ -44,7 +44,7 @@ class GameEventController(
 
         val existingEvents = assoc.gameEvents
         if (existingEvents.isNotEmpty()) {
-            repo.deleteAll(existingEvents)
+            repo.deleteAllByIdInBatch(existingEvents.map { it.id });
         }
 
         val savedList = mutableListOf<GameEvent>()
