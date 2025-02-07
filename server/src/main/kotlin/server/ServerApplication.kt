@@ -249,7 +249,7 @@ fun scrapeCertainGameLive(
 		throw NoSuchElementException("Cannot find the game within liveGames")
 	}
 
-	while (game.result?.finished != true) { // TODO: change condition to check if game is finished
+	while (game.result?.finished != true) { // TODO: change condition to check if game is finished and if game has started (no new games are found while this is running)
 		val events = dsvLiveScraper.getGameEvents(
 			liveGame.first.first,
 			liveGame.first.second,
