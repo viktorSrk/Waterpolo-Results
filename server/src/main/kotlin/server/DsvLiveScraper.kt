@@ -1,5 +1,6 @@
 package server
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import commons.GameDsvInfo
@@ -24,16 +25,21 @@ class DsvLiveScraper(private val websiteUrl: String, val gameController: GameCon
         val body = "data=%7B%22H%22%3A%22wbhub%22%2C%22M%22%3A%22getAllGames%22%2C%22A%22%3A%5B%5D%2C%22I%22%3A0%7D".toRequestBody(mediaType)
 
         val request = Request.Builder()
-            .url("$websiteUrl/signalr/send?transport=serverSentEvents&clientProtocol=2.1&connectionToken=uFf2euJVjztJkGc14eAFNFyhV9k95wdfZnf1kuQ2BMosWCrUeS23rJ0NCwa3GTU07tP1oK7SBlPEBR9dIZ5xsJXu8pkfgbDyMb9OLhcRMJL%2BujvtBpubDyFXwkj%2F%2BUJo&connectionData=%5B%7B%22name%22%3A%22wbhub%22%7D%5D HTTP/2")
+            .url("$websiteUrl/signalr/send?transport=serverSentEvents&clientProtocol=2.1&connectionToken=nrPo%2FCvg5YCDAjPl5JAAY5TBV9%2FgKPQi3ntLcNDqTLDOAOhugx8P6XAfkTQaG8R5qtPezMGVtC0k97IiHZqMKko0j%2F8IuiJfqT%2FC8XDjCm8YHyG%2BLLNzhNJCDn4yJWDw&connectionData=%5B%7B%22name%22%3A%22wbhub%22%7D%5D")
             .post(body)
             .build()
 
-        val responseObject: LinkedHashMap<String, Any>
+        var responseObject: LinkedHashMap<String, Any>
 
         client.newCall(request).execute().use {response ->
             val responseJson = response.body?.string()
             val mapper = jacksonObjectMapper()
-            responseObject = mapper.readValue(responseJson ?: "")
+            try {
+                responseObject = mapper.readValue(responseJson ?: "")
+            } catch (e: JsonParseException) {
+                println("Failed to parse JSON response: ${e.message}");
+                responseObject = LinkedHashMap();
+            }
         }
 
         val gamesResponses: ArrayList<LinkedHashMap<String, Any>> = responseObject.get("R") as ArrayList<LinkedHashMap<String, Any>>
@@ -84,7 +90,7 @@ class DsvLiveScraper(private val websiteUrl: String, val gameController: GameCon
                 "%2C%22I%22%3A1%7D").toRequestBody(mediaType)
 
         val request = Request.Builder()
-            .url("$websiteUrl/signalr/send?transport=serverSentEvents&clientProtocol=2.1&connectionToken=uFf2euJVjztJkGc14eAFNFyhV9k95wdfZnf1kuQ2BMosWCrUeS23rJ0NCwa3GTU07tP1oK7SBlPEBR9dIZ5xsJXu8pkfgbDyMb9OLhcRMJL%2BujvtBpubDyFXwkj%2F%2BUJo&connectionData=%5B%7B%22name%22%3A%22wbhub%22%7D%5D HTTP/2")
+            .url("$websiteUrl/signalr/send?transport=serverSentEvents&clientProtocol=2.1&connectionToken=nrPo%2FCvg5YCDAjPl5JAAY5TBV9%2FgKPQi3ntLcNDqTLDOAOhugx8P6XAfkTQaG8R5qtPezMGVtC0k97IiHZqMKko0j%2F8IuiJfqT%2FC8XDjCm8YHyG%2BLLNzhNJCDn4yJWDw&connectionData=%5B%7B%22name%22%3A%22wbhub%22%7D%5D")
             .post(body)
             .build()
 

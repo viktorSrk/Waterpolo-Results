@@ -144,12 +144,17 @@ class DsvScraper(val websiteUrl: String) {
             extractIt<GameSetHolder> { results ->
                 htmlDocument {
                     val gameRows = findFirst("#games").findFirst(".table").findAll("tr").
-                    filter { try {
-                        it.findFirst("a")
-                        true
-                    } catch (e: ElementNotFoundException) {
-                        false
-                    }}
+                        filter { try {
+                            it.findFirst("a")
+                            true
+                        } catch (e: ElementNotFoundException) {
+                            false
+                        }}
+
+                    if (gameRows.isEmpty()) {
+                        println("No games found");
+                        return@htmlDocument
+                    }
 
                     for (row in gameRows) {
                         val home = row.children[2].text
