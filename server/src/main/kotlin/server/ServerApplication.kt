@@ -116,7 +116,7 @@ suspend fun main(args: Array<String>) {
 //				e.printStackTrace()
 				println("Trying to scrape live again ...")
 			}
-	}
+	} // TODO: extract liveJobs from liveScrapingJob, in order that new liveGames are fetched while liveJobs is running
 
 	jobs.add(scrapingJob)
 	jobs.add(liveScrapingJob)
