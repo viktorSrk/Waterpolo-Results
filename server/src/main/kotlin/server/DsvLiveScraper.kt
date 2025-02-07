@@ -37,8 +37,8 @@ class DsvLiveScraper(private val websiteUrl: String, val gameController: GameCon
             try {
                 responseObject = mapper.readValue(responseJson ?: "")
             } catch (e: JsonParseException) {
-                println("Failed to parse JSON response: ${e.message}");
-                responseObject = LinkedHashMap();
+                println("Failed to parse JSON response: ${e.message}")
+                responseObject = LinkedHashMap()
             }
         }
 

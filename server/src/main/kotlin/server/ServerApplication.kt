@@ -14,13 +14,11 @@ import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
 import org.springframework.context.ApplicationContext
 import org.springframework.http.ResponseEntity
-import org.springframework.transaction.annotation.Transactional
 import server.api.GameController
 import server.api.GameEventController
 import server.api.GameResultController
 import server.api.LeagueController
 import server.api.TeamSheetController
-import java.lang.reflect.InvocationTargetException
 
 @SpringBootApplication
 @EntityScan(basePackages = ["commons", "server"])
@@ -58,7 +56,7 @@ suspend fun main(args: Array<String>) {
 				LeaguesToScrape.leagueNames,
 				LeaguesToScrape.leagueRegions
 			)
-			break;
+			break
 		} catch (e: Exception) {
 			println("Error while scraping: ${e.message}")
 //			e.printStackTrace()

@@ -6,7 +6,6 @@ import commons.gameevents.GameEvent
 import commons.gameevents.GoalGameEvent
 import commons.gameevents.PenaltyGameEvent
 import commons.gameevents.TimeoutGameEvent
-import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
@@ -44,7 +43,7 @@ class GameEventController(
 
         val existingEvents = assoc.gameEvents
         if (existingEvents.isNotEmpty()) {
-            repo.deleteAllByIdInBatch(existingEvents.map { it.id });
+            repo.deleteAllByIdInBatch(existingEvents.map { it.id })
         }
 
         val savedList = mutableListOf<GameEvent>()

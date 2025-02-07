@@ -133,7 +133,7 @@ class DsvScraper(val websiteUrl: String) {
     fun scrapeGames(league: League): List<Game> {
         if (league.dsvInfo == null) return emptyList()
 
-        println("Scraping games for league ${league.name}");
+        println("Scraping games for league ${league.name}")
 
         val games = skrape(HttpFetcher) {
             request {
@@ -152,7 +152,7 @@ class DsvScraper(val websiteUrl: String) {
                         }}
 
                     if (gameRows.isEmpty()) {
-                        println("No games found");
+                        println("No games found")
                         return@htmlDocument
                     }
 
@@ -209,7 +209,7 @@ class DsvScraper(val websiteUrl: String) {
     fun scrapeGameResult(game: Game): GameResult {
         if (game.dsvInfo == null) return GameResult()
 
-        println("Scraping result for game ${game.home} vs ${game.away}");
+        println("Scraping result for game ${game.home} vs ${game.away}")
 
         val gameResult = skrape(HttpFetcher) {
             request {
