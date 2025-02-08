@@ -1,6 +1,7 @@
 package server.api
 
 import commons.TeamSheet
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,10 +26,17 @@ class TeamSheetController(
     }
 
     @PostMapping(path = ["/add/{resultId}"])
+    @Transactional
     fun addTeamSheets(@RequestBody teamSheets: List<TeamSheet>, @PathVariable resultId: Long): ResponseEntity<List<TeamSheet>> {
         if (teamSheets.size != 2) return ResponseEntity.badRequest().build()
 
         val assoc = resultRepo.getReferenceById(resultId)
+
+        val existingTeamSheets = assoc.teamSheets
+        if (existingTeamSheets.isNotEmpty()) {
+            repo.deleteAllByIdInBatch(existingTeamSheets.map { it.id })
+        }
+
         val savedList = mutableListOf<TeamSheet>()
 
         for (i in 0..1) {
