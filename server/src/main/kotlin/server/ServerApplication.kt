@@ -63,7 +63,7 @@ suspend fun main(args: Array<String>) {
 			println("Trying to scrape again ...")
 		}
 
-	var liveGames = dsvLiveScraper.getLiveGames()
+//	var liveGames = dsvLiveScraper.getLiveGames() // TODO: uncomment
 
 	val jobs = mutableListOf<Job>()
 	val scrapingJob = GlobalScope.launch {
@@ -89,37 +89,37 @@ suspend fun main(args: Array<String>) {
 			}
 		}
 	}
-	val liveScrapingJob = GlobalScope.launch {
-		while (true)
-			try {
-				println("scraping live ...")
-				liveGames = dsvLiveScraper.getLiveGames()
-				val liveJobs = liveGames.map {
-					GlobalScope.launch {
-						println("scraping live game ...")
-						val leagueDsvInfo = it.first.first
-						val gameDsvInfo = it.first.second
-
-						val gameId = gameController.getIdByDsvInfo(gameDsvInfo, leagueDsvInfo)
-
-						if (gameId == -1L) {
-							return@launch
-						}
-
-						val game = gameController.getGameById(gameId)
-						scrapeCertainGameLive(dsvLiveScraper, game, liveGames, gameController, true, gameResultController, gameEventController)
-					}
-				}
-				liveJobs.joinAll()
-			} catch (e: Exception) {
-				println("Error while scraping live: ${e.message}")
-//				e.printStackTrace()
-				println("Trying to scrape live again ...")
-			}
-	} // TODO: extract liveJobs from liveScrapingJob, in order that new liveGames are fetched while liveJobs is running
+//	val liveScrapingJob = GlobalScope.launch { // TODO: uncomment
+//		while (true)
+//			try {
+//				println("scraping live ...")
+//				liveGames = dsvLiveScraper.getLiveGames()
+//				val liveJobs = liveGames.map {
+//					GlobalScope.launch {
+//						println("scraping live game ...")
+//						val leagueDsvInfo = it.first.first
+//						val gameDsvInfo = it.first.second
+//
+//						val gameId = gameController.getIdByDsvInfo(gameDsvInfo, leagueDsvInfo)
+//
+//						if (gameId == -1L) {
+//							return@launch
+//						}
+//
+//						val game = gameController.getGameById(gameId)
+//						scrapeCertainGameLive(dsvLiveScraper, game, liveGames, gameController, true, gameResultController, gameEventController)
+//					}
+//				}
+//				liveJobs.joinAll()
+//			} catch (e: Exception) {
+//				println("Error while scraping live: ${e.message}")
+////				e.printStackTrace()
+//				println("Trying to scrape live again ...")
+//			}
+//	} // TODO: extract liveJobs from liveScrapingJob, in order that new liveGames are fetched while liveJobs is running
 
 	jobs.add(scrapingJob)
-	jobs.add(liveScrapingJob)
+//	jobs.add(liveScrapingJob) // TODO: uncomment
 	jobs.joinAll()
 
 //	while (true) {
