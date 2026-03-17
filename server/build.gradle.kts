@@ -33,6 +33,10 @@ dependencies {
 	implementation("it.skrape:skrapeit:1.2.2")
 }
 
+springBoot {
+	mainClass.set("server.ServerApplicationKt")
+}
+
 evaluationDependsOn(":commons")
 
 tasks.withType<KotlinCompile> {
