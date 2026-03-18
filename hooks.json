@@ -3,5 +3,12 @@
 		"id": "test",
 		"execute-command": "./deploy.sh",
 		"command-working-directory": "/Users/vik/apps/Waterpolo-Results"
+		"trigger-rule": {
+			"match": {
+				"type": "value",
+				"value": "refs/heads/prod",
+				"parameter": { "source": "payload", "name": "ref" }
+			}
+		}
 	}
 ]
