@@ -1,7 +1,7 @@
 [
 	{
-		"id": "waterpolo-results-prod",
+		"id": "test",
 		"execute-command": "./deploy.sh",
-		"command-working-directory": "/Users/vik/apps/Waterpolo-Results",
+		"command-working-directory": "/Users/vik/apps/Waterpolo-Results"
 	}
 ]
