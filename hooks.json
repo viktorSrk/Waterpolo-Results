@@ -1,0 +1,7 @@
+[
+	{
+		"id": "waterpolo-results-prod",
+		"execute-command": "./run-server.sh",
+		"command-working-directory": "~/apps/Waterpolo-Results",
+	}
+]
