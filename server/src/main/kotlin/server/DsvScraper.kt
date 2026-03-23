@@ -136,6 +136,9 @@ class DsvScraper(val websiteUrl: String) {
         val games = skrape(HttpFetcher) {
             request {
                 url = websiteUrl + league.dsvInfo!!.buildLeagueLink()
+                headers = mapOf(
+                    "Referer" to websiteUrl + "Index.aspx"
+                )
             }
 
             extractIt<GameSetHolder> { results ->
@@ -149,8 +152,8 @@ class DsvScraper(val websiteUrl: String) {
                     }}
 
                     for (row in gameRows) {
-                        val home = row.children[2].text
-                        val away = row.children[3].text
+                        val home = row.children[3].text
+                        val away = row.children[5].text
 
                         var date: Long
                         var dateHolderText = row.children[1].text
