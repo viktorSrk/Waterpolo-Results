@@ -15,6 +15,7 @@ import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.extractIt
 import it.skrape.fetcher.skrape
+import it.skrape.selects.DocElement
 import it.skrape.selects.ElementNotFoundException
 import it.skrape.selects.html5.a
 import it.skrape.selects.html5.table
@@ -108,6 +109,9 @@ class DsvScraper(val websiteUrl: String) {
                     ?: skrape(HttpFetcher) {
                         request {
                             url = websiteUrl + dsvInfo.buildLeagueLink()
+                            headers = mapOf(
+                                "Referer" to websiteUrl + "Index.aspx"
+                            )
                         }
                         extractIt {
                             htmlDocument {
@@ -207,6 +211,9 @@ class DsvScraper(val websiteUrl: String) {
         val gameResult = skrape(HttpFetcher) {
             request {
                 url = websiteUrl + game.dsvInfo!!.buildGameLink()
+                headers = mapOf(
+                    "Referer" to websiteUrl + "Index.aspx"
+                )
             }
 
             extractIt<GameResult> { result ->
@@ -220,17 +227,23 @@ class DsvScraper(val websiteUrl: String) {
                         finished = endDate < System.currentTimeMillis()
                     }
 
-                    val homeScore = arrayOf(0, 0, 0, 0)
-                    val awayScore = arrayOf(0, 0, 0, 0)
+                    var homeScore = arrayOf(0, 0, 0, 0)
+                    var awayScore = arrayOf(0, 0, 0, 0)
                     try {
-                        for (i in 0..3) {
-                            val quarterScoreHome =
-                                findFirst("#ContentSection__${i + 1}homeLabel").text
-                            val quarterScoreAway =
-                                findFirst("#ContentSection__${i + 1}guestLabel").text
-                            homeScore[i] = quarterScoreHome.toInt()
-                            awayScore[i] = quarterScoreAway.toInt()
-                        }
+                        val homeScoreString = findFirst("#ContentSection_scoreboard_data")
+                            .findFirst("table")
+                            .findFirst("tbody")
+                            .findThird("tr")
+                            .findFirst("td")
+                            .text
+                        homeScore = homeScoreString.split("-").map(String::toInt).toTypedArray()
+                        val awayScoreString = findFirst("#ContentSection_scoreboard_data")
+                            .findFirst("table")
+                            .findFirst("tbody")
+                            .findThird("tr")
+                            .findSecond("td")
+                            .text
+                        awayScore = awayScoreString.split("-").map(String::toInt).toTypedArray()
                     } catch (_: ElementNotFoundException) {}
 
                     result.finished = finished
@@ -249,6 +262,9 @@ class DsvScraper(val websiteUrl: String) {
         val gameEvents = skrape(HttpFetcher) {
             request {
                 url = websiteUrl + result.game!!.dsvInfo!!.buildGameLink()
+                headers = mapOf(
+                    "Referer" to websiteUrl + "Index.aspx"
+                )
             }
 
             extractIt<GameEventListHolder> { result ->
@@ -349,11 +365,19 @@ class DsvScraper(val websiteUrl: String) {
         val teamSheet = skrape(HttpFetcher) {
             request {
                 url = websiteUrl + result.game!!.dsvInfo!!.buildGameLink()
+                headers = mapOf(
+                    "Referer" to websiteUrl + "Index.aspx"
+                )
             }
 
             extractIt<TeamSheetHolder> { result ->
                 htmlDocument {
-                    val statsContainer = findFirst("#stats").findAll("tbody")
+                    val statsContainer: List<DocElement>
+                    try {
+                        statsContainer = findFirst("#stats").findAll("tbody")
+                    } catch (e: ElementNotFoundException) {
+                        return@htmlDocument
+                    }
                     statsContainer.forEach {
                         val rows = it.findAll("tr")
 
